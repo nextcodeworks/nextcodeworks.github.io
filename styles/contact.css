@@ -1,0 +1,228 @@
+/* Contact Section */
+#contact {
+    padding: 5rem 0;
+    background-color: var(--bg);
+}
+
+.contact-container a {
+    text-decoration: none;
+}
+
+.contact-container {
+    max-width: 1368px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.contact-header h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.contact-header p {
+    color: #A3A3A3;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    max-width: 672px;
+    margin: 0 auto;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 992px) {
+    .contact-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+    }
+}
+
+.contact-form h3,
+.contact-info h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.contact-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.contact-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.contact-form-input,
+.contact-form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    background-color: var(--bg-secondary);
+    color: var(--text);
+    font-size: 0.875rem;
+    transition: border-color 0.3s;
+}
+
+.contact-form-input:focus,
+.contact-form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.contact-form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.contact-form-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    color: #171717;
+    letter-spacing: 0.3px;
+}
+
+.contact-form-submit:hover {
+    background-color: var(--primary-dark);
+}
+
+.contact-methods-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+    .contact-methods-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.contact-method-card {
+    background-color: var(--bg-secondary);
+    padding: 1.2rem;
+    letter-spacing: 0.3px;
+    transition: transform 0.3s;
+}
+
+.contact-method-card:hover {
+    transform: translateY(-5px);
+}
+
+.contact-method-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.contact-method-icon {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.contact-method-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.contact-method-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.contact-method-value {
+    color: #A3A3A3;
+    font-size: 16px;
+}
+
+.contact-cta {
+    background-color: var(--primary);
+    color: var(--bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.contact-cta-content {
+    max-width: 100%;
+}
+
+.contact-cta h3 {
+    color: var(--bg);
+    margin-bottom: 1rem;
+}
+
+.contact-cta p {
+    color: rgba(9, 9, 11, 0.9);
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
+}
+
+.contact-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: rgb(38,38,38);
+    color: var(--primary);
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-cta-button:hover {
+    background-color: rgba(38,38,38,0.8);
+}
+
+.form-message {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    display: none;
+}
+
+.form-message.success {
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    display: block;
+}
+
+.form-message.error {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    display: block;
+}

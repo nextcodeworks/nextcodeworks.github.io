@@ -1,0 +1,120 @@
+/* Services & Pricing */
+#services {
+    background-color: var(--bg);
+}
+
+.skills-title {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.skills-title h2 {
+    margin-bottom: 1.2rem;
+}
+
+.skills-title p {
+    font-size: 1.1rem;
+    color: #A1A1AA;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.pricing-card {
+    background-color: var(--bg-secondary);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.pricing-card h3 {
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+}
+
+.pricing-card p {
+    color: var(--text-dark);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.pricing-card-flex {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.pricing-icon {
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pricing-text {
+    text-align: right;
+}
+
+.price-amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.price-per-project {
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.pricing-card.featured {
+    border: 1px solid var(--primary);
+    transform: translateY(-1px);
+}
+
+.pricing-label {
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary);
+    color: var(--bg);
+    padding: 4px 12px;
+    border-radius: 2rem;
+    font-weight: bold;
+    font-size: 14px;
+    font-family: sans-serif;
+    letter-spacing: 0.02rem;
+}
+
+.pricing-features {
+    flex-grow: 1;
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+}
