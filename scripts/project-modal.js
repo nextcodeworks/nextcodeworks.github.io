@@ -4,35 +4,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalCloseBtn = document.querySelector('.modal-close-btn');
     const infoButtons = document.querySelectorAll('.project-btn.primary');
     
+    // Create elements for enlarged image viewer
+    const enlargedViewer = document.createElement('div');
+    enlargedViewer.className = 'enlarged-viewer';
+    enlargedViewer.innerHTML = `
+        <button class="enlarged-close-btn">✕</button>
+        <div class="enlarged-image-container">
+            <button class="nav-arrow prev-arrow">❮</button>
+            <img class="enlarged-image" src="" alt="Enlarged project image">
+            <button class="nav-arrow next-arrow">❯</button>
+        </div>
+    `;
+    document.body.appendChild(enlargedViewer);
+    
+    // Project data - you would replace this with your actual project data
     // Project data - you would replace this with your actual project data
     const projectsData = [
         {
+            title: "Discord Trading Bot",
+            description: "<p>This Discord bot provides real-time market data, trading signals, and portfolio management tools. It supports multiple cryptocurrency exchanges and can execute paper trades based on user-defined strategies.</p><p>The bot uses discord.py for the Discord integration and connects to Binance API for market data. It includes features like backtesting and paper trading.</p>",
+            tags: ["Python", "Discord.py", "APIs", "Financial Analysis"],
+            images: ["discord-bot/!price.png", "discord-bot/!backtest.png", "discord-bot/!bothelp.png", "discord-bot/!signals.png","discord-bot/!about.png"],
+            codeLink: "https://github.com/nextcodeworks/discord-trading-bot"
+        },
+        {
             title: "Advanced Task Manager",
-            description: "<p>This task manager was built to help users organize their daily tasks with advanced features like categorization, priority levels, and due dates. The application includes data visualization to help users understand their productivity patterns.</p><p>The backend uses SQLite for data storage and PyQt5 for the graphical interface. The application supports multiple user profiles and can export reports in various formats.</p>",
-            tags: ["Python", "PyQt5", "SQLite", "Data Visualization"],
-            images: ["project1-1.jpg", "project1-2.jpg", "project1-3.jpg"],
-            codeLink: "https://github.com/username/advanced-task-manager"
+            description: "<p>This task manager was built to help users organize their daily tasks with advanced features like categorization, priority levels, and due dates.</p><p>The backend uses SQLite for data storage and Tkinter for the graphical interface.</p>",
+            tags: ["Python", "Tkinter", "SQLite", "Data Visualization"],
+            images: ["task-manager.png"],
+            codeLink: "https://github.com/nextcodeworks/task-manager"
         },
         {
             title: "Web Scraping Price Chart Generator",
-            description: "<p>This tool automates the process of collecting price data from multiple e-commerce websites and generates comparative charts. It can track price history and alert users when prices drop below a certain threshold.</p><p>The tool uses BeautifulSoup and Selenium for web scraping and Matplotlib for generating visualizations. It can be configured to monitor any product URL and runs on a scheduled basis.</p>",
+            description: "<p>This tool automates the process of collecting price data from an e-commerce website and generates different types of charts.</p><p>The tool uses BeautifulSoup for web scraping and Matplotlib for generating visualizations and Tkinter for GUI. It can be configured to monitor any product URL.</p>",
             tags: ["Python", "BeautifulSoup", "Selenium", "Matplotlib"],
-            images: ["project2-1.jpg", "project2-2.jpg"],
-            codeLink: "https://github.com/username/price-chart-generator"
+            images: ["price-chart-generator.png"],
+            codeLink: "https://github.com/nextcodeworks/ecommerce-price-analyzer"
         },
         {
             title: "Stock Price Tracker",
-            description: "<p>A real-time stock price tracking application that provides customizable alerts and historical data visualization. Users can create watchlists and set price alerts for their favorite stocks.</p><p>The application connects to financial APIs to fetch real-time data and uses Tkinter for the user interface. It includes features like technical indicators and portfolio tracking.</p>",
+            description: "<p>A real-time stock price tracking application that provides historical data visualization.</p><p>The application connects to financial APIs to fetch real-time data and uses Tkinter for the user interface. It includes features like technical indicators and stock data.</p>",
             tags: ["Python", "Tkinter", "APIs", "Pandas"],
-            images: ["project3-1.jpg", "project3-2.jpg", "project3-3.jpg"],
-            codeLink: "https://github.com/username/stock-price-tracker"
-        },
-        {
-            title: "Discord Trading Bot",
-            description: "<p>This Discord bot provides real-time market data, trading signals, and portfolio management tools. It supports multiple cryptocurrency exchanges and can execute trades based on user-defined strategies.</p><p>The bot uses discord.py for the Discord integration and connects to exchange APIs for market data. It includes features like backtesting and paper trading.</p>",
-            tags: ["Python", "Discord.py", "APIs", "Financial Analysis"],
-            images: ["project4-1.jpg", "project4-2.jpg"],
-            codeLink: "https://github.com/username/discord-trading-bot"
+            images: ["stock-price-tracker.png"],
+            codeLink: "https://github.com/nextcodeworks/stock-price-tracker"
         },
         {
             title: "E-commerce Landing Page",
@@ -65,10 +79,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add more projects as needed
     ];
 
+    // Variables to track current image index
+    let currentProjectIndex = 0;
+    let currentImageIndex = 0;
+    
     // Open modal when Info button is clicked
     infoButtons.forEach((button, index) => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            currentProjectIndex = index;
             openProjectModal(index);
         });
     });
@@ -85,18 +104,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close modal with Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && projectModal.classList.contains('active')) {
-            closeProjectModal();
+        if (e.key === 'Escape') {
+            if (enlargedViewer.classList.contains('active')) {
+                closeEnlargedView();
+            } else if (projectModal.classList.contains('active')) {
+                closeProjectModal();
+            }
         }
     });
 
     function openProjectModal(projectIndex) {
         const project = projectsData[projectIndex];
+        currentImageIndex = 0;
         
         // Set modal content
         document.getElementById('modalProjectTitle').textContent = project.title;
         document.getElementById('modalProjectDescription').innerHTML = project.description;
-        document.getElementById('modalProjectLink').href = project.codeLink;
+
+        // Set the link to open in new tab
+        const codeLink = document.getElementById('modalProjectLink');
+        codeLink.href = project.codeLink;
         
         // Set tags
         const toolsBadges = document.querySelector('.tools-badges');
@@ -108,21 +135,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Set images
+        // Set images
         const galleryMain = document.querySelector('.gallery-main img');
         const thumbnailsContainer = document.querySelector('.gallery-thumbnails');
         thumbnailsContainer.innerHTML = '';
-        
+
         if (project.images.length > 0) {
             galleryMain.src = `images/${project.images[0]}`;
+            galleryMain.alt = project.title;
+            
+            // Add click event to main image to enlarge it
+            galleryMain.style.cursor = 'zoom-in';
+            galleryMain.addEventListener('click', () => {
+                openEnlargedView(projectIndex, currentImageIndex);
+            });
             
             project.images.forEach((image, idx) => {
                 const thumbnail = document.createElement('div');
                 thumbnail.className = 'thumbnail-item' + (idx === 0 ? ' active' : '');
-                thumbnail.innerHTML = `<img src="images/${image}" alt="Thumbnail ${idx + 1}">`;
+                const thumbnailImg = document.createElement('img');
+                thumbnailImg.src = `images/${image}`;
+                thumbnailImg.alt = `Thumbnail ${idx + 1}`;
+                thumbnail.appendChild(thumbnailImg);
                 
-                thumbnail.addEventListener('click', () => {
+                thumbnail.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     // Update main image
                     galleryMain.src = `images/${image}`;
+                    currentImageIndex = idx;
+                    
+                    // Update active thumbnail
+                    document.querySelectorAll('.thumbnail-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    thumbnail.classList.add('active');
+                });
+                
+                // Remove the click event from thumbnail images (they should only update the main image)
+                thumbnailImg.style.cursor = 'pointer';
+                thumbnailImg.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Just update the main image, don't open enlarged view
+                    galleryMain.src = `images/${image}`;
+                    currentImageIndex = idx;
                     
                     // Update active thumbnail
                     document.querySelectorAll('.thumbnail-item').forEach(item => {
@@ -144,4 +199,79 @@ document.addEventListener('DOMContentLoaded', function() {
         projectModal.classList.remove('active');
         document.body.style.overflow = '';
     }
+    
+    function openEnlargedView(projectIndex, imageIndex) {
+        const project = projectsData[projectIndex];
+        currentImageIndex = imageIndex;
+        
+        const enlargedImage = enlargedViewer.querySelector('.enlarged-image');
+        enlargedImage.src = `images/${project.images[imageIndex]}`;
+        enlargedImage.alt = project.title;
+        
+        enlargedViewer.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeEnlargedView() {
+        enlargedViewer.classList.remove('active');
+        if (!projectModal.classList.contains('active')) {
+            document.body.style.overflow = '';
+        }
+    }
+    
+    // Enlarged viewer navigation
+    enlargedViewer.querySelector('.enlarged-close-btn').addEventListener('click', closeEnlargedView);
+    
+    enlargedViewer.querySelector('.prev-arrow').addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateImage(-1);
+    });
+    
+    enlargedViewer.querySelector('.next-arrow').addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateImage(1);
+    });
+    
+    function navigateImage(direction) {
+        const project = projectsData[currentProjectIndex];
+        currentImageIndex += direction;
+        
+        // Wrap around if needed
+        if (currentImageIndex < 0) {
+            currentImageIndex = project.images.length - 1;
+        } else if (currentImageIndex >= project.images.length) {
+            currentImageIndex = 0;
+        }
+        
+        const enlargedImage = enlargedViewer.querySelector('.enlarged-image');
+        enlargedImage.src = `images/${project.images[currentImageIndex]}`;
+    }
+
+    // In the openProjectModal function, replace the code link section with:
+    const codeLink = document.getElementById('modalProjectLink');
+    if (project.codeLink) {
+        codeLink.href = project.codeLink;
+        codeLink.onclick = null; // Remove any existing click handlers
+        codeLink.addEventListener('click', function(e) {
+            // Let the default link behavior happen (open in new tab)
+        });
+    } else {
+        codeLink.removeAttribute('href');
+        codeLink.onclick = function(e) {
+            e.preventDefault();
+            // Optional: Show message that no code link is available
+            alert('No code repository available for this project');
+        };
+    }
+    
+    // Keyboard navigation for enlarged view
+    document.addEventListener('keydown', (e) => {
+        if (enlargedViewer.classList.contains('active')) {
+            if (e.key === 'ArrowLeft') {
+                navigateImage(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateImage(1);
+            }
+        }
+    });
 });
