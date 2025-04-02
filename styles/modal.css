@@ -85,6 +85,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .gallery-main img {
@@ -196,6 +197,8 @@
     text-decoration: none;
     font-size: 0.875rem;
     transition: background-color 0.2s ease;
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
 
 .modal-link-btn:hover {
@@ -225,3 +228,92 @@
         font-size: 1.5rem;
     }
 }
+
+/* Enlarged Image Viewer Styles */
+.enlarged-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.enlarged-viewer.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.enlarged-image-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.enlarged-image {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.enlarged-close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease;
+    padding: 0.5rem;
+}
+
+.enlarged-close-btn:hover {
+    transform: scale(1.1);
+}
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    font-size: 1.6rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 20%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 10;
+}
+
+.nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.prev-arrow {
+    left: 0.5rem;
+}
+
+.next-arrow {
+    right: 0.5rem;
+}
+
