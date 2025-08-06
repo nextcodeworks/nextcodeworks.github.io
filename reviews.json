@@ -1,0 +1,142 @@
+{
+  "reviews": [
+    {
+      "id": 1,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "lighuid_110",
+      "country": "Germany",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "1 day",
+      "review": "this guy is the goat",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=this%20guy%20is%20the%20goat"
+    },
+    {
+      "id": 2,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "gunnerysarge",
+      "country": "Australia",
+      "stars": 5,
+      "price": "$200-$400",
+      "duration": "2 weeks",
+      "review": "the attention to detail as well as the professionalism can not be matched by anyone.People say machines are just a machine but you have certainly created Life. Thank you for everything ... will definantly be seeing you soon for another project or 2.. thanks again.. keep in touch",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=the%20attention%20to%20detail%20as%20well%20as%20the%20professionalism%20can%20not%20be%20matched%20by%20anyone",
+      "isRepeatClient": true
+    },
+    {
+      "id": 3,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "raichugb",
+      "country": "United Kingdom",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "2 days",
+      "review": "Fast and accurate as always, great to work with!",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Fast%20and%20accurate%20as%20always%2C%20great%20to%20work%20with!",
+      "isRepeatClient": true
+    },
+    {
+      "id": 4,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "damian4010",
+      "country": "United States",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "6 days",
+      "review": "Excellent attention to detail and the best communication",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Excellent%20attention%20to%20detail%20and%20the%20best%20communication"
+    },
+    {
+      "id": 5,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "fenolox",
+      "country": "Netherlands",
+      "stars": 5,
+      "price": "$100-$200",
+      "duration": "8 days",
+      "review": "I forgot about how much I paid in total for the order, while it may not be the cheapest, I definitely can't say that it wasn't worth. The developer went above and beyond when it comes to getting the bot done and I am pretty sure they're capable of making anything that you're looking for at the right price. I am not here to slander or give less than 5 stars knowing that they did their best, communicated very well and stayed real from start to end when it comes to making the bot along with the effort they put into it. They are also very friendly while remaining professional. I generally would not want to post a rating cause that means in the long run they become more desired by other buyers. Though in their favor I want them to succeed and do well so all I can do is give my gratitude for wanting to help me with my projects.",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=I%20forgot%20about%20how%20much%20I%20paid%20in%20total%20for%20the%20order%2C%20while%20it%20may%20not%20be%20the%20cheapest",
+      "isRepeatClient": true
+    },
+    {
+      "id": 6,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "zkevinh",
+      "country": "United States",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "2 days",
+      "review": "Honestly, I didn't expect this level of work. That being said, the bot was finished expertly and much quick than I expected. Great work!",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Honestly%2C%20I%20didn't%20expect%20this%20level%20of%20work.%20That%20being%20said"
+    },
+    {
+      "id": 7,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "swag_cost",
+      "country": "United States",
+      "stars": 5,
+      "price": "$50-$100",
+      "duration": "3 days",
+      "review": "This was definitely pricey and costed me quite a bit, but it doesn't really matter when the bot you are given is exceeding what you even paid for, and completely bug-free. Additionally, offered to provide the cheapest options (as I was on a budget) which definitely sealed the deal. Overall, 10/10 experience.",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=This%20was%20definitely%20pricey%20and%20costed%20me%20quite%20a%20bit%2C%20but%20it%20doesn't%20really%20matter"
+    },
+    {
+      "id": 8,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "gunnerysarge",
+      "country": "Australia",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "4 days",
+      "review": "once again you deliver above and beyond in the results your produce.. thankyou again.. speak to you soon",
+      "link": "https://www.fiverr.com/gunnerysarge#:~:text=once%20again%20you%20deliver%20above%20and%20beyond%20in%20the%20results%20your%20produce",
+      "isRepeatClient": true
+    },
+    {
+      "id": 9,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "raichugb",
+      "country": "Netherlands",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "2 days",
+      "review": "Great communication and looking forward to working with again",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Great%20communication%20and%20looking%20forward%20to%20working%20with%20again",
+      "isRepeatClient": true
+    },
+    {
+      "id": 10,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "alphadoo",
+      "country": "Canada",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "3 weeks",
+      "review": "I forgot about how much I paid in total for the order, while it may not be the cheapest, I definitely can't say that it wasn't worth. The developer went above and beyond when it comes to getting the bot done and I am pretty sure they're capable of making anything that you're looking for at the right price. I am not here to slander or give less than 5 stars knowing that they did their best, communicated very well and stayed real from start to end when it comes to making the bot along with the effort they put into it. They are also very friendly while remaining professional. I generally would not want to post a rating cause that means in the long run they become more desired by other buyers. Though in their favor I want them to succeed and do well so all I can do is give my gratitude for wanting to help me with my projects.",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Devon's%20great%20even%20when%20hes%20a%20bit%20under%20the%20weather%20he's%20still%20delivering.%20If%20I%20ever%20need%20a%20bot%20later%20on%2C%20I'd%20contact%20him."
+    },
+    {
+      "id": 11,
+      "platform": "Fiverr",
+      "logo": "images/fiverr-logo.png",
+      "name": "raichugb",
+      "country": "United Kingdom",
+      "stars": 5,
+      "price": "Up to $50",
+      "duration": "4 days",
+      "review": "Very responsible and was a good personal to collaborate with. Will use again.",
+      "link": "https://www.fiverr.com/nextcodeworks#:~:text=Very%20responsible%20and%20was%20a%20good%20personal%20to%20collaborate%20with.%20Will%20use%20again.",
+      "isRepeatClient": true
+    }
+  ]
+}
