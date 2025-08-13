@@ -41,17 +41,20 @@ nav {
 
 .nav-links {
     display: flex;
-    gap: 1.3rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .nav-links a {
     color: #FAFAFACC;
-    font-size: 14px;
-    letter-spacing: 0.3px;
+    font-size: 13px;
+    letter-spacing: 0.2px;
     font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -100,7 +103,7 @@ nav {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .nav-links {
         display: none;
     }
