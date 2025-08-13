@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Services Price Estimator</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        [data-state="checked"] {
+            background-color: white !important;
+        }
+        [data-state="checked"] span {
+            background-color: black !important;
+        }
+        .slider-thumb {
+            background-color: white !important;
+            border-color: white !important;
+        }
+        .slider-range {
+            background-color: white !important;
+            color: black !important;
+        }
+        body {
+            background-color: #0a0a0a;
+        }
+        .card-bg {
+            background-color: rgba(23, 23, 23, 0.7);
+            border-color: #404040;
+        }
+        .card-bg:hover {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-color: #606060;
+        }
+        .feature-bg {
+            background-color: rgba(30, 30, 30, 0.5);
+            border-color: #404040;
+        }
+        .feature-bg:hover {
+            background-color: rgba(40, 40, 40, 0.6);
+        }
+        .price-display {
+            background: linear-gradient(to right, rgba(20, 20, 20, 0.7), rgba(30, 30, 30, 0.7));
+            border-color: #404040;
+        }
+        .modal-bg {
+            background-color: #1a1a1a;
+            border-color: #404040;
+        }
+        .summary-bg {
+            background-color: rgba(30, 30, 30, 0.7);
+            border-color: #404040;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Price Estimator Section -->
+    <div class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-white mb-6">Price Estimator</h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    Get an instant estimate for your custom Discord project
+                </p>
+            </div>
+
+            <!-- Content Container -->
+            <div class="relative" id="content-container">
+                <!-- Card Selection View -->
+                <div id="card-selection-view" class="transition-all duration-500 ease-in-out opacity-100 scale-100">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Discord Bot Card -->
+                        <div id="discordBot" class="card-bg hover:scale-105 transition-all duration-300 cursor-pointer rounded-lg overflow-hidden backdrop-blur-sm">
+                            <div class="text-center pb-4 pt-6 px-6">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                    <i data-lucide="bot" class="h-8 w-8 text-black"></i>
+                                </div>
+                                <h3 class="text-white text-xl font-semibold">Discord Bot</h3>
+                                <p class="text-gray-400">Custom Discord bots with advanced features</p>
+                            </div>
+                            <div class="text-center px-6 pb-6">
+                                <button class="w-full bg-white text-black hover:bg-gray-100 shadow-md py-2 px-4 rounded-md font-medium transition-all">
+                                    Configure
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Selfbot Card -->
+                        <div id="selfbot" class="card-bg hover:scale-105 transition-all duration-300 cursor-pointer rounded-lg overflow-hidden backdrop-blur-sm">
+                            <div class="text-center pb-4 pt-6 px-6">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                    <i data-lucide="zap" class="h-8 w-8 text-black"></i>
+                                </div>
+                                <h3 class="text-white text-xl font-semibold">Selfbot</h3>
+                                <p class="text-gray-400">Automated Discord user accounts</p>
+                            </div>
+                            <div class="text-center px-6 pb-6">
+                                <button class="w-full bg-white text-black hover:bg-gray-100 shadow-md py-2 px-4 rounded-md font-medium transition-all">
+                                    Configure
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Vencord Plugin Card -->
+                        <div id="vencordPlugin" class="card-bg hover:scale-105 transition-all duration-300 cursor-pointer rounded-lg overflow-hidden backdrop-blur-sm">
+                            <div class="text-center pb-4 pt-6 px-6">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                    <i data-lucide="code" class="h-8 w-8 text-black"></i>
+                                </div>
+                                <h3 class="text-white text-xl font-semibold">Vencord Plugin</h3>
+                                <p class="text-gray-400">Custom Discord client modifications</p>
+                            </div>
+                            <div class="text-center px-6 pb-6">
+                                <button class="w-full bg-white text-black hover:bg-gray-100 shadow-md py-2 px-4 rounded-md font-medium transition-all">
+                                    Configure
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Discord Web Card -->
+                        <div id="discordWeb" class="card-bg hover:scale-105 transition-all duration-300 cursor-pointer rounded-lg overflow-hidden backdrop-blur-sm">
+                            <div class="text-center pb-4 pt-6 px-6">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                    <i data-lucide="globe" class="h-8 w-8 text-black"></i>
+                                </div>
+                                <h3 class="text-white text-xl font-semibold">Discord Web</h3>
+                                <p class="text-gray-400">Web applications with Discord integration</p>
+                            </div>
+                            <div class="text-center px-6 pb-6">
+                                <button class="w-full bg-white text-black hover:bg-gray-100 shadow-md py-2 px-4 rounded-md font-medium transition-all">
+                                    Configure
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estimator Views -->
+                <div id="estimator-views" class="hidden transition-all duration-500 ease-in-out opacity-100 scale-100">
+                    <!-- Discord Bot Estimator -->
+                    <div id="discordBot-estimator" class="hidden">
+                        <div class="mb-8">
+                            <button id="back-button" class="text-white hover:text-gray-300 hover:bg-gray-800/50 bg-transparent border-none flex items-center">
+                                <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                                Back to Options
+                            </button>
+                        </div>
+
+                        <div class="card-bg shadow-2xl rounded-lg overflow-hidden">
+                            <div class="border-b border-gray-700 p-6">
+                                <h3 class="text-white text-3xl flex items-center font-semibold">
+                                    <i data-lucide="bot" class="h-8 w-8 mr-3 text-white"></i>
+                                    Discord Bot Estimator
+                                </h3>
+                                <p class="text-gray-400 text-lg">
+                                    Configure your custom Discord bot requirements
+                                </p>
+                            </div>
+                            <div class="space-y-10 p-8">
+                                <!-- Description -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Bot Description</label>
+                                    <p class="text-sm text-gray-400 mb-3">
+                                        Provide a detailed description of your bot. The more detailed, the better the final product will be. 
+                                        Describe each command and what it should do.
+                                    </p>
+                                    <textarea 
+                                        id="bot-description"
+                                        placeholder="I want a trading bot that allows users to create listings, search for items, manage their inventory..."
+                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 min-h-[120px] placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                    ></textarea>
+                                </div>
+
+                                <!-- Bot Type -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Bot Type</label>
+                                    <select id="bot-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="">Select bot type</option>
+                                        <option value="moderation">Moderation</option>
+                                        <option value="utility">Utility</option>
+                                        <option value="music">Music</option>
+                                        <option value="economy">Economy</option>
+                                        <option value="aiChatbot">AI Chatbot</option>
+                                        <option value="multipurpose">Multi-purpose</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                </div>
+
+                                <!-- Commands -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Commands</label>
+                                    
+                                    <div class="space-y-4 feature-bg p-6 rounded-lg border-gray-700">
+                                        <div class="space-y-3">
+                                            <label class="text-white font-medium">Slash Commands: <span id="slash-commands-value">5</span></label>
+                                            <div class="flex space-x-4 items-center">
+                                                <input 
+                                                    type="range" 
+                                                    id="slash-commands-slider"
+                                                    value="5"
+                                                    min="1"
+                                                    max="50"
+                                                    class="flex-1 slider-thumb"
+                                                />
+                                                <input 
+                                                    type="number"
+                                                    id="slash-commands-input"
+                                                    min="1"
+                                                    max="50"
+                                                    value="5"
+                                                    class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 focus:ring-1 focus:ring-gray-400 transition-all w-20 p-2 rounded"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-3">
+                                            <label class="text-white font-medium">Message Commands: <span id="message-commands-value">0</span></label>
+                                            <div class="flex space-x-4 items-center">
+                                                <input 
+                                                    type="range" 
+                                                    id="message-commands-slider"
+                                                    value="0"
+                                                    min="0"
+                                                    max="50"
+                                                    class="flex-1 slider-thumb"
+                                                />
+                                                <input 
+                                                    type="number"
+                                                    id="message-commands-input"
+                                                    min="0"
+                                                    max="50"
+                                                    value="0"
+
+                            <!-- Discord Web Card -->
+                            <div id="discordWeb" class="card-bg hover:scale-105 transition-all duration-300 cursor-pointer rounded-lg overflow-hidden backdrop-blur-sm">
+                                <div class="text-center pb-4 pt-6 px-6">
+                                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                        <i data-lucide="globe" class="h-8 w-8 text-black"></i>
+                                    </div>
+                                    <h3 class="text-white text-xl font-semibold">Discord Web</h3>
+                                    <p class="text-gray-400">Web applications with Discord integration</p>
+                                </div>
+                                <div class="text-center px-6 pb-6">
+                                    <button class="w-full bg-white text-black hover:bg-gray-100 shadow-md py-2 px-4 rounded-md font-medium transition-all">
+                                        Configure
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estimator Views -->
+                    <div id="estimator-views" class="hidden transition-all duration-500 ease-in-out opacity-100 scale-100">
+                        <!-- Discord Bot Estimator -->
+                        <div id="discordBot-estimator" class="hidden">
+                            <div class="mb-8">
+                                <button id="back-button" class="text-white hover:text-gray-300 hover:bg-gray-800/50 bg-transparent border-none flex items-center">
+                                    <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                                    Back to Options
+                                </button>
+                            </div>
+
+                            <div class="card-bg shadow-2xl rounded-lg overflow-hidden">
+                                <div class="border-b border-gray-700 p-6">
+                                    <h3 class="text-white text-3xl flex items-center font-semibold">
+                                        <i data-lucide="bot" class="h-8 w-8 mr-3 text-white"></i>
+                                        Discord Bot Estimator
+                                    </h3>
+                                    <p class="text-gray-400 text-lg">
+                                        Configure your custom Discord bot requirements
+                                    </p>
+                                </div>
+                                <div class="space-y-10 p-8">
+                                    <!-- Description -->
+                                    <div class="space-y-4">
+                                        <label class="text-white text-xl font-semibold">Bot Description</label>
+                                        <p class="text-sm text-gray-400 mb-3">
+                                            Provide a detailed description of your bot. The more detailed, the better the final product will be. 
+                                            Describe each command and what it should do.
+                                        </p>
+                                        <textarea 
+                                            id="bot-description"
+                                            placeholder="I want a trading bot that allows users to create listings, search for items, manage their inventory..."
+                                            class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 min-h-[120px] placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                        ></textarea>
+                                    </div>
+
+                                    <!-- Bot Type -->
+                                    <div class="space-y-4">
+                                        <label class="text-white text-xl font-semibold">Bot Type</label>
+                                        <select id="bot-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                            <option value="">Select bot type</option>
+                                            <option value="moderation">Moderation</option>
+                                            <option value="utility">Utility</option>
+                                            <option value="music">Music</option>
+                                            <option value="economy">Economy</option>
+                                            <option value="aiChatbot">AI Chatbot</option>
+                                            <option value="multipurpose">Multi-purpose</option>
+                                            <option value="custom">Custom</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Commands -->
+                                    <div class="space-y-6">
+                                        <label class="text-white text-xl font-semibold">Commands</label>
+                                        
+                                        <div class="space-y-4 feature-bg p-6 rounded-lg border-gray-700">
+                                            <div class="space-y-3">
+                                                <label class="text-white font-medium">Slash Commands: <span id="slash-commands-value">5</span></label>
+                                                <div class="flex space-x-4 items-center">
+                                                    <input 
+                                                        type="range" 
+                                                        id="slash-commands-slider"
+                                                        value="5"
+                                                        min="1"
+                                                        max="50"
+                                                        class="flex-1 slider-thumb"
+                                                    />
+                                                    <input 
+                                                        type="number"
+                                                        id="slash-commands-input"
+                                                        min="1"
+                                                        max="50"
+                                                        value="5"
+                                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 focus:ring-1 focus:ring-gray-400 transition-all w-20 p-2 rounded"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="space-y-3">
+                                                <label class="text-white font-medium">Message Commands: <span id="message-commands-value">0</span></label>
+                                                <div class="flex space-x-4 items-center">
+                                                    <input 
+                                                        type="range" 
+                                                        id="message-commands-slider"
+                                                        value="0"
+                                                        min="0"
+                                                        max="50"
+                                                        class="flex-1 slider-thumb"
+                                                    />
+                                                    <input 
+                                                        type="number"
+                                                        id="message-commands-input"
+                                                        min="0"
+                                                        max="50"
+                                                        value="0"
+                                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 focus:ring-1 focus:ring-gray-400 transition-all w-20 p-2 rounded"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <label class="flex items-center space-x-3 p-3 feature-bg rounded-lg cursor-pointer hover:bg-gray-700/50 transition-colors w-full">
+                                                <input type="checkbox" id="autoresponder" class="sr-only peer">
+                                                <div class="relative inline-flex items-center cursor-pointer flex-1">
+                                                    <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white"></div>
+                                                    <span class="text-white font-medium ml-3">Autoresponder System</span>
+                                                </div>
+                                            </label>
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Features</label>
+                                    <div class="grid md:grid-cols-2 gap-4" id="bot-features">
+                                        <!-- Features will be added here by JavaScript -->
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <label class="price-estimator-feature-item">
+                                            <input type="checkbox" id="ai-integration-checkbox">
+                                            <span class="text-white font-medium">AI Integration</span>
+                                            <span class="price-estimator-feature-price">+$50</span>
+                                        </label>
+                                        <div id="ai-integration-input-container" class="hidden ml-8 mt-2">
+                                            <input 
+                                                id="ai-integration-input"
+                                                placeholder="e.g., ChatGPT, Claude, Gemini"
+                                                class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-2 rounded"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Styling -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Styling / Branding</label>
+                                    
+                                    <div class="feature-bg p-6 rounded-lg space-y-4">
+                                        <div class="space-y-3">
+                                            <label class="text-white font-medium">Custom Bot Status</label>
+                                            <div class="flex space-x-3">
+                                                <select id="custom-status-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 w-32 p-2 rounded">
+                                                    <option value="playing">Playing</option>
+                                                    <option value="streaming">Streaming</option>
+                                                    <option value="watching">Watching</option>
+                                                </select>
+                                                <input 
+                                                    id="custom-status"
+                                                    placeholder="with Discord API"
+                                                    class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 flex-1 placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all p-2 rounded"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-3">
+                                            <label class="text-white font-medium">Custom Color</label>
+                                            <input 
+                                                type="color"
+                                                id="custom-color"
+                                                value="#000000"
+                                                class="border border-gray-600 focus:border-gray-400 w-20 h-12 rounded-lg"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delivery Preference -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Delivery Preference</label>
+                                    <select id="delivery-preference" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="flexible">Flexible (-5%)</option>
+                                        <option value="standard" selected>Standard</option>
+                                        <option value="priority">Priority (+25%)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Extras -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Extras</label>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="space-y-3">
+                                            <label class="text-white font-medium">API Integration</label>
+                                            <textarea 
+                                                id="api-integrations"
+                                                placeholder="Provide API names and testing API keys for each integration needed"
+                                                class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                            ></textarea>
+                                        </div>
+
+                                        <div class="flex items-center space-x-3 p-4 feature-bg rounded-lg">
+                                            <input type="checkbox" id="hosting-setup" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                                            <label class="text-white font-medium">Hosting Setup (requires account/server access)</label>
+                                            <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$40</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Price Display -->
+                                <div class="price-display p-8 rounded-lg shadow-lg">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-white text-2xl font-semibold">Estimated Price:</span>
+                                        <span id="estimated-price" class="text-4xl font-bold text-white">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-400">
+                                        <span class="text-lg">Estimated Time:</span>
+                                        <span id="estimated-time" class="text-lg font-medium">TBD</span>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button 
+                                    id="submit-bot"
+                                    class="w-full bg-white text-black hover:bg-gray-100 text-lg py-4 shadow-lg hover:shadow-xl transition-all rounded-md font-medium"
+                                    disabled
+                                >
+                                    Submit & Generate Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selfbot Estimator -->
+                    <div id="selfbot-estimator" class="hidden">
+                        <div class="mb-8">
+                            <button class="back-button text-white hover:text-gray-300 hover:bg-gray-800/50 bg-transparent border-none flex items-center">
+                                <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                                Back to Options
+                            </button>
+                        </div>
+
+                        <div class="card-bg shadow-2xl rounded-lg overflow-hidden">
+                            <div class="border-b border-gray-700 p-6">
+                                <h3 class="text-white text-3xl flex items-center font-semibold">
+                                    <i data-lucide="zap" class="h-8 w-8 mr-3 text-white"></i>
+                                    Selfbot Estimator
+                                </h3>
+                                <p class="text-gray-400 text-lg">
+                                    Configure your custom Discord selfbot requirements
+                                </p>
+                            </div>
+                            <div class="space-y-10 p-8">
+                                <!-- Description -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Selfbot Description</label>
+                                    <p class="text-sm text-gray-400 mb-3">
+                                        Describe what you want your selfbot to do. Be specific about automation features and behaviors.
+                                    </p>
+                                    <textarea 
+                                        id="selfbot-description"
+                                        placeholder="I want a selfbot that automatically moderates my server, schedules messages, and tracks user activity..."
+                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 min-h-[120px] placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                    ></textarea>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Features</label>
+                                    <div class="grid md:grid-cols-2 gap-4" id="selfbot-features">
+                                        <!-- Features will be added here by JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Automation Level -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Automation Level</label>
+                                    <select id="selfbot-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="">Select automation level</option>
+                                        <option value="basic">Basic Automation</option>
+                                        <option value="advanced">Advanced Automation</option>
+                                        <option value="premium">Premium Automation</option>
+                                    </select>
+                                </div>
+
+                                <!-- Price Display -->
+                                <div class="price-display p-8 rounded-lg shadow-lg">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-white text-2xl font-semibold">Estimated Price:</span>
+                                        <span id="selfbot-estimated-price" class="text-4xl font-bold text-white">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-400">
+                                        <span class="text-lg">Estimated Time:</span>
+                                        <span class="text-lg font-medium">3 - 5 days</span>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button 
+                                    id="submit-selfbot"
+                                    class="w-full bg-white text-black hover:bg-gray-100 text-lg py-4 shadow-lg hover:shadow-xl transition-all rounded-md font-medium"
+                                    disabled
+                                >
+                                    Submit & Generate Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vencord Plugin Estimator -->
+                    <div id="vencordPlugin-estimator" class="hidden">
+                        <div class="mb-8">
+                            <button class="back-button text-white hover:text-gray-300 hover:bg-gray-800/50 bg-transparent border-none flex items-center">
+                                <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                                Back to Options
+                            </button>
+                        </div>
+
+                        <div class="card-bg shadow-2xl rounded-lg overflow-hidden">
+                            <div class="border-b border-gray-700 p-6">
+                                <h3 class="text-white text-3xl flex items-center font-semibold">
+                                    <i data-lucide="code" class="h-8 w-8 mr-3 text-white"></i>
+                                    Vencord Plugin Estimator
+                                </h3>
+                                <p class="text-gray-400 text-lg">
+                                    Configure your custom Vencord plugin requirements
+                                </p>
+                            </div>
+                            <div class="space-y-10 p-8">
+                                <!-- Description -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Plugin Description</label>
+                                    <p class="text-sm text-gray-400 mb-3">
+                                        Describe what functionality you want your Vencord plugin to add to Discord.
+                                    </p>
+                                    <textarea 
+                                        id="vencord-description"
+                                        placeholder="I want a plugin that adds custom UI elements, enhances message display, and integrates with external services..."
+                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 min-h-[120px] placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                    ></textarea>
+                                </div>
+
+                                <!-- Plugin Type -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Plugin Type</label>
+                                    <select id="vencord-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="">Select plugin type</option>
+                                        <option value="ui">UI Enhancement</option>
+                                        <option value="functionality">Functionality Extension</option>
+                                        <option value="integration">External Integration</option>
+                                        <option value="theme">Theme/Visual</option>
+                                    </select>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Features</label>
+                                    <div class="grid md:grid-cols-2 gap-4" id="vencord-features">
+                                        <!-- Features will be added here by JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Complexity Level -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Complexity Level</label>
+                                    <div class="flex space-x-4 items-center">
+                                        <input 
+                                            type="range" 
+                                            id="vencord-complexity-slider"
+                                            value="1"
+                                            min="1"
+                                            max="10"
+                                            class="flex-1 slider-thumb"
+                                        />
+                                        <span id="vencord-complexity-value" class="text-white font-medium w-20">Level 1</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400">Higher complexity levels require more advanced modifications and testing</p>
+                                </div>
+
+                                <!-- Price Display -->
+                                <div class="price-display p-8 rounded-lg shadow-lg">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-white text-2xl font-semibold">Estimated Price:</span>
+                                        <span id="vencord-estimated-price" class="text-4xl font-bold text-white">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-400">
+                                        <span class="text-lg">Estimated Time:</span>
+                                        <span class="text-lg font-medium">4 - 7 days</span>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button 
+                                    id="submit-vencord"
+                                    class="w-full bg-white text-black hover:bg-gray-100 text-lg py-4 shadow-lg hover:shadow-xl transition-all rounded-md font-medium"
+                                    disabled
+                                >
+                                    Submit & Generate Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discord Web Estimator -->
+                    <div id="discordWeb-estimator" class="hidden">
+                        <div class="mb-8">
+                            <button class="back-button text-white hover:text-gray-300 hover:bg-gray-800/50 bg-transparent border-none flex items-center">
+                                <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                                Back to Options
+                            </button>
+                        </div>
+
+                        <div class="card-bg shadow-2xl rounded-lg overflow-hidden">
+                            <div class="border-b border-gray-700 p-6">
+                                <h3 class="text-white text-3xl flex items-center font-semibold">
+                                    <i data-lucide="globe" class="h-8 w-8 mr-3 text-white"></i>
+                                    Discord Web Application Estimator
+                                </h3>
+                                <p class="text-gray-400 text-lg">
+                                    Configure your custom Discord web application requirements
+                                </p>
+                            </div>
+                            <div class="space-y-10 p-8">
+                                <!-- Description -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Application Description</label>
+                                    <p class="text-sm text-gray-400 mb-3">
+                                        Describe your Discord web application. Include features, user interface requirements, and Discord integration needs.
+                                    </p>
+                                    <textarea 
+                                        id="web-description"
+                                        placeholder="I want a web dashboard for my Discord server with user management, analytics, custom commands interface..."
+                                        class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 min-h-[120px] placeholder:text-gray-500 focus:ring-1 focus:ring-gray-400 transition-all w-full p-3 rounded"
+                                    ></textarea>
+                                </div>
+
+                                <!-- Application Type -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Application Type</label>
+                                    <select id="web-type" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="">Select application type</option>
+                                        <option value="dashboard">Server Dashboard</option>
+                                        <option value="bot-manager">Bot Management Panel</option>
+                                        <option value="community">Community Platform</option>
+                                        <option value="analytics">Analytics Platform</option>
+                                        <option value="custom">Custom Application</option>
+                                    </select>
+                                </div>
+
+                                <!-- Pages Count -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Number of Pages</label>
+                                    <div class="flex space-x-4 items-center">
+                                        <input 
+                                            type="range" 
+                                            id="web-pages-slider"
+                                            value="1"
+                                            min="1"
+                                            max="20"
+                                            class="flex-1 slider-thumb"
+                                        />
+                                        <input 
+                                            type="number"
+                                            id="web-pages-input"
+                                            min="1"
+                                            max="20"
+                                            value="1"
+                                            class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 focus:ring-1 focus:ring-gray-400 transition-all w-20 p-2 rounded"
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="space-y-6">
+                                    <label class="text-white text-xl font-semibold">Features</label>
+                                    <div class="grid md:grid-cols-2 gap-4" id="web-features">
+                                        <!-- Features will be added here by JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Technology Stack -->
+                                <div class="space-y-4">
+                                    <label class="text-white text-xl font-semibold">Preferred Technology Stack</label>
+                                    <select id="web-tech-stack" class="border border-gray-600 focus:border-gray-400 text-white bg-gray-800/50 hover:bg-gray-800/70 transition-all w-full p-2 rounded">
+                                        <option value="react">React + Node.js</option>
+                                        <option value="nextjs">Next.js</option>
+                                        <option value="vue">Vue.js + Express</option>
+                                        <option value="custom">Custom Stack</option>
+                                    </select>
+                                </div>
+
+                                <!-- Hosting Setup -->
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-3 p-4 feature-bg rounded-lg">
+                                        <input type="checkbox" id="web-hosting-setup" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                                        <label class="text-white font-medium">Hosting & Deployment Setup</label>
+                                        <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$75</span>
+                                    </div>
+                                </div>
+
+                                <!-- Price Display -->
+                                <div class="price-display p-8 rounded-lg shadow-lg">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-white text-2xl font-semibold">Estimated Price:</span>
+                                        <span id="web-estimated-price" class="text-4xl font-bold text-white">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-400">
+                                        <span class="text-lg">Estimated Time:</span>
+                                        <span class="text-lg font-medium">1 - 3 weeks</span>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button 
+                                    id="submit-web"
+                                    class="w-full bg-white text-black hover:bg-gray-100 text-lg py-4 shadow-lg hover:shadow-xl transition-all rounded-md font-medium"
+                                    disabled
+                                >
+                                    Submit & Generate Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Modal -->
+    <div id="summary-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="modal-bg max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl rounded-lg w-full">
+            <div class="p-6">
+                <h3 class="text-3xl font-bold text-center mb-6 text-white">
+                    BOT ESTIMATE GENERATED
+                </h3>
+            </div>
+            <div class="space-y-6 px-6 pb-6">
+                <pre id="summary-content" class="whitespace-pre-wrap text-sm summary-bg p-6 rounded-lg font-mono text-gray-200"></pre>
+                <div class="flex space-x-3">
+                    <button 
+                        id="copy-summary"
+                        class="flex-1 bg-white text-black hover:bg-gray-100 shadow-lg py-2 px-4 rounded-md font-medium flex items-center justify-center"
+                    >
+                        <i data-lucide="copy" class="h-4 w-4 mr-2"></i>
+                        Copy Summary
+                    </button>
+                    <button 
+                        id="close-modal"
+                        class="border border-gray-600 text-white hover:bg-gray-800/50 py-2 px-4 rounded-md font-medium"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pricing configuration
+        const PRICING_CONFIG = {
+            discordBot: {
+                basePrice: {
+                    basic: 50,
+                    standard: 100,
+                    premium: 200
+                },
+                complexityMultiplier: {
+                    basic: 1.0,
+                    standard: 1.5,
+                    premium: 2.0
+                },
+                slashCommandPrice: 10,
+                messageCommandPrice: 5,
+                features: {
+                    moderation: 30,
+                    music: 50,
+                    leveling: 25,
+                    customCommands: 20,
+                    welcomeMessages: 15,
+                    aiIntegration: 75
+                },
+                styling: {
+                    customStatus: 10,
+                    customColor: 5
+                },
+                autoresponder: {
+                    basePrice: 15,
+                    perResponder: 5,
+                    placeholders: 10
+                },
+                deliveryMultiplier: {
+                    standard: 1.0,
+                    express: 1.2,
+                    priority: 1.5
+                },
+                extras: {
+                    apiIntegration: 25,
+                    hostingSetup: 30
+                }
+            },
+            selfbot: {
+                basePrice: 80,
+                features: {
+                    autoModeration: 20,
+                    messageScheduling: 15,
+                    autoReactions: 10,
+                    customCommands: 25,
+                    userTracking: 30,
+                    antiRaid: 35
+                }
+            },
+            vencordPlugin: {
+                basePrice: 60,
+                features: {
+                    uiModifications: 20,
+                    messageEnhancements: 15,
+                    themeIntegration: 25,
+                    customButtons: 30,
+                    dataExport: 20
+                }
+            },
+            discordWeb: {
+                basePrice: 150,
+                features: {
+                    responsiveDesign: 40,
+                    userAuthentication: 50,
+                    realTimeUpdates: 60,
+                    customDashboard: 80,
+                    apiIntegration: 45
+                }
+            }
+        };
+
+        // State management
+        let selectedCard = null;
+        let estimatorState = {
+            description: '',
+            botType: '',
+            slashCommands: 5,
+            messageCommands: 0,
+            autoresponder: false,
+            features: [],
+            customStatus: '',
+            customStatusType: 'playing',
+            customColor: '#000000',
+            deliveryPreference: 'standard',
+            apiIntegrations: '',
+            hostingSetup: false,
+            aiIntegration: ''
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Setup card selection
+            setupCardSelection();
+            
+            // Setup Discord Bot estimator
+            setupDiscordBotEstimator();
+            
+            // Setup Selfbot estimator
+            setupSelfbotEstimator();
+            
+            // Setup Vencord Plugin estimator
+            setupVencordPluginEstimator();
+            
+            // Setup Discord Web estimator
+            setupDiscordWebEstimator();
+            
+            // Setup modal
+            setupModal();
+        });
+
+        function setupCardSelection() {
+            const cards = ['discordBot', 'selfbot', 'vencordPlugin', 'discordWeb'];
+            
+            cards.forEach(cardId => {
+                const card = document.getElementById(cardId);
+                card.addEventListener('click', () => {
+                    selectedCard = cardId;
+                    document.getElementById('card-selection-view').classList.add('hidden');
+                    document.getElementById('estimator-views').classList.remove('hidden');
+                    document.getElementById(`${cardId}-estimator`).classList.remove('hidden');
+                    
+                    // Reset the state for the new estimator
+                    resetEstimatorState();
+                    
+                    // Update the UI based on the selected card
+                    updateEstimatorUI();
+                });
+            });
+        }
+
+        function setupDiscordBotEstimator() {
+            // Back button
+            document.getElementById('back-button').addEventListener('click', goBackToSelection);
+            
+            // Description
+            document.getElementById('bot-description').addEventListener('input', function() {
+                estimatorState.description = this.value;
+                updateSubmitButtonState();
+                calculateDiscordBotPrice();
+            });
+            
+            // Bot type
+            document.getElementById('bot-type').addEventListener('change', function() {
+                estimatorState.botType = this.value;
+                updateSubmitButtonState();
+                calculateDiscordBotPrice();
+            });
+            
+            // Slash commands
+            const slashCommandsSlider = document.getElementById('slash-commands-slider');
+            const slashCommandsInput = document.getElementById('slash-commands-input');
+            const slashCommandsValue = document.getElementById('slash-commands-value');
+            
+            slashCommandsSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                slashCommandsInput.value = value;
+                slashCommandsValue.textContent = value;
+                estimatorState.slashCommands = value;
+                calculateDiscordBotPrice();
+            });
+            
+            slashCommandsInput.addEventListener('input', function() {
+                let value = parseInt(this.value) || 1;
+                value = Math.max(1, Math.min(50, value));
+                this.value = value;
+                slashCommandsSlider.value = value;
+                slashCommandsValue.textContent = value;
+                estimatorState.slashCommands = value;
+                calculateDiscordBotPrice();
+            });
+            
+            // Message commands
+            const messageCommandsSlider = document.getElementById('message-commands-slider');
+            const messageCommandsInput = document.getElementById('message-commands-input');
+            const messageCommandsValue = document.getElementById('message-commands-value');
+            
+            messageCommandsSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                messageCommandsInput.value = value;
+                messageCommandsValue.textContent = value;
+                estimatorState.messageCommands = value;
+                calculateDiscordBotPrice();
+            });
+            
+            messageCommandsInput.addEventListener('input', function() {
+                let value = parseInt(this.value) || 0;
+                value = Math.max(0, Math.min(50, value));
+                this.value = value;
+                messageCommandsSlider.value = value;
+                messageCommandsValue.textContent = value;
+                estimatorState.messageCommands = value;
+                calculateDiscordBotPrice();
+            });
+            
+            // Autoresponder
+            document.getElementById('autoresponder').addEventListener('change', function() {
+                estimatorState.autoresponder = this.checked;
+                calculateDiscordBotPrice();
+            });
+            
+            // Features
+            const botFeaturesContainer = document.getElementById('bot-features');
+            const botFeatures = [
+                { id: 'buttonsMenus', label: 'Buttons/Menus', price: 15 },
+                { id: 'modals', label: 'Modals', price: 20 },
+                { id: 'detailedLogging', label: 'Detailed Logging', price: 25 },
+                { id: 'levelingSystem', label: 'Leveling System', price: 40 },
+                { id: 'databaseIntegration', label: 'Database Integration (SQLite/PostgreSQL)', price: 35 },
+                { id: 'multiguildSupport', label: 'Multiguild Support', price: 30 }
+            ];
+            
+            botFeatures.forEach(feature => {
+                const featureElement = document.createElement('div');
+                featureElement.className = 'flex items-center space-x-3 p-4 feature-bg rounded-lg';
+                featureElement.innerHTML = `
+                    <input type="checkbox" id="${feature.id}" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                    <label class="text-white flex-1 font-medium">${feature.label}</label>
+                    <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$${feature.price}</span>
+                `;
+                botFeaturesContainer.appendChild(featureElement);
+                
+                document.getElementById(feature.id).addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!estimatorState.features.includes(feature.id)) {
+                            estimatorState.features.push(feature.id);
+                        }
+                    } else {
+                        estimatorState.features = estimatorState.features.filter(f => f !== feature.id);
+                    }
+                    calculateDiscordBotPrice();
+                });
+            });
+            
+            // AI Integration
+            document.getElementById('ai-integration-checkbox').addEventListener('change', function() {
+                const container = document.getElementById('ai-integration-input-container');
+                if (this.checked) {
+                    container.classList.remove('hidden');
+                    if (!estimatorState.features.includes('aiIntegration')) {
+                        estimatorState.features.push('aiIntegration');
+                    }
+                } else {
+                    container.classList.add('hidden');
+                    estimatorState.features = estimatorState.features.filter(f => f !== 'aiIntegration');
+                    estimatorState.aiIntegration = '';
+                }
+                calculateDiscordBotPrice();
+            });
+            
+            document.getElementById('ai-integration-input').addEventListener('input', function() {
+                estimatorState.aiIntegration = this.value;
+            });
+            
+            // Custom status
+            document.getElementById('custom-status').addEventListener('input', function() {
+                estimatorState.customStatus = this.value;
+                calculateDiscordBotPrice();
+            });
+            
+            document.getElementById('custom-status-type').addEventListener('change', function() {
+                estimatorState.customStatusType = this.value;
+            });
+            
+            // Custom color
+            document.getElementById('custom-color').addEventListener('input', function() {
+                estimatorState.customColor = this.value;
+                calculateDiscordBotPrice();
+            });
+            
+            // Delivery preference
+            document.getElementById('delivery-preference').addEventListener('change', function() {
+                estimatorState.deliveryPreference = this.value;
+                calculateDiscordBotPrice();
+            });
+            
+            // API integrations
+            document.getElementById('api-integrations').addEventListener('input', function() {
+                estimatorState.apiIntegrations = this.value;
+                calculateDiscordBotPrice();
+            });
+            
+            // Hosting setup
+            document.getElementById('hosting-setup').addEventListener('change', function() {
+                estimatorState.hostingSetup = this.checked;
+                calculateDiscordBotPrice();
+            });
+            
+            // Submit button
+            document.getElementById('submit-bot').addEventListener('click', showSummaryModal);
+        }
+
+        function setupSelfbotEstimator() {
+            // Back button
+            document.querySelectorAll('.back-button').forEach(btn => {
+                btn.addEventListener('click', goBackToSelection);
+            });
+            
+            // Description
+            document.getElementById('selfbot-description').addEventListener('input', function() {
+                estimatorState.description = this.value;
+                updateSubmitButtonState();
+                calculateSelfbotPrice();
+            });
+            
+            // Features
+            const selfbotFeaturesContainer = document.getElementById('selfbot-features');
+            const selfbotFeatures = [
+                { id: 'autoModeration', label: 'Auto Moderation', price: 20 },
+                { id: 'messageScheduling', label: 'Message Scheduling', price: 15 },
+                { id: 'autoReactions', label: 'Auto Reactions', price: 10 },
+                { id: 'customCommands', label: 'Custom Commands', price: 25 },
+                { id: 'userTracking', label: 'User Activity Tracking', price: 30 },
+                { id: 'antiRaid', label: 'Anti-Raid Protection', price: 35 }
+            ];
+            
+            selfbotFeatures.forEach(feature => {
+                const featureElement = document.createElement('div');
+                featureElement.className = 'flex items-center space-x-3 p-4 feature-bg rounded-lg';
+                featureElement.innerHTML = `
+                    <input type="checkbox" id="selfbot-${feature.id}" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                    <label class="text-white flex-1 font-medium">${feature.label}</label>
+                    <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$${feature.price}</span>
+                `;
+                selfbotFeaturesContainer.appendChild(featureElement);
+                
+                document.getElementById(`selfbot-${feature.id}`).addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!estimatorState.features.includes(feature.id)) {
+                            estimatorState.features.push(feature.id);
+                        }
+                    } else {
+                        estimatorState.features = estimatorState.features.filter(f => f !== feature.id);
+                    }
+                    calculateSelfbotPrice();
+                });
+            });
+            
+            // Automation level
+            document.getElementById('selfbot-type').addEventListener('change', function() {
+                estimatorState.botType = this.value;
+                updateSubmitButtonState();
+                calculateSelfbotPrice();
+            });
+            
+            // Submit button
+            document.getElementById('submit-selfbot').addEventListener('click', showSummaryModal);
+        }
+
+        function setupVencordPluginEstimator() {
+            // Description
+            document.getElementById('vencord-description').addEventListener('input', function() {
+                estimatorState.description = this.value;
+                updateSubmitButtonState();
+                calculateVencordPluginPrice();
+            });
+            
+            // Plugin type
+            document.getElementById('vencord-type').addEventListener('change', function() {
+                estimatorState.botType = this.value;
+                updateSubmitButtonState();
+                calculateVencordPluginPrice();
+            });
+            
+            // Features
+            const vencordFeaturesContainer = document.getElementById('vencord-features');
+            const vencordFeatures = [
+                { id: 'uiModifications', label: 'UI Modifications', price: 20 },
+                { id: 'messageEnhancements', label: 'Message Enhancements', price: 15 },
+                { id: 'themeIntegration', label: 'Theme Integration', price: 25 },
+                { id: 'customButtons', label: 'Custom Buttons/Controls', price: 30 },
+                { id: 'dataExport', label: 'Data Export Features', price: 20 },
+                { id: 'apiIntegration', label: 'API Integration', price: 35 }
+            ];
+            
+            vencordFeatures.forEach(feature => {
+                const featureElement = document.createElement('div');
+                featureElement.className = 'flex items-center space-x-3 p-4 feature-bg rounded-lg';
+                featureElement.innerHTML = `
+                    <input type="checkbox" id="vencord-${feature.id}" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                    <label class="text-white flex-1 font-medium">${feature.label}</label>
+                    <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$${feature.price}</span>
+                `;
+                vencordFeaturesContainer.appendChild(featureElement);
+                
+                document.getElementById(`vencord-${feature.id}`).addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!estimatorState.features.includes(feature.id)) {
+                            estimatorState.features.push(feature.id);
+                        }
+                    } else {
+                        estimatorState.features = estimatorState.features.filter(f => f !== feature.id);
+                    }
+                    calculateVencordPluginPrice();
+                });
+            });
+            
+            // Complexity level
+            const complexitySlider = document.getElementById('vencord-complexity-slider');
+            const complexityValue = document.getElementById('vencord-complexity-value');
+            
+            complexitySlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                complexityValue.textContent = `Level ${value}`;
+                estimatorState.slashCommands = value;
+                calculateVencordPluginPrice();
+            });
+            
+            // Submit button
+            document.getElementById('submit-vencord').addEventListener('click', showSummaryModal);
+        }
+
+        function setupDiscordWebEstimator() {
+            // Description
+            document.getElementById('web-description').addEventListener('input', function() {
+                estimatorState.description = this.value;
+                updateSubmitButtonState();
+                calculateDiscordWebPrice();
+            });
+            
+            // Application type
+            document.getElementById('web-type').addEventListener('change', function() {
+                estimatorState.botType = this.value;
+                updateSubmitButtonState();
+                calculateDiscordWebPrice();
+            });
+            
+            // Pages count
+            const pagesSlider = document.getElementById('web-pages-slider');
+            const pagesInput = document.getElementById('web-pages-input');
+            
+            pagesSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                pagesInput.value = value;
+                estimatorState.slashCommands = value;
+                calculateDiscordWebPrice();
+            });
+            
+            pagesInput.addEventListener('input', function() {
+                let value = parseInt(this.value) || 1;
+                value = Math.max(1, Math.min(20, value));
+                this.value = value;
+                pagesSlider.value = value;
+                estimatorState.slashCommands = value;
+                calculateDiscordWebPrice();
+            });
+            
+            // Features
+            const webFeaturesContainer = document.getElementById('web-features');
+            const webFeatures = [
+                { id: 'responsiveDesign', label: 'Responsive Design', price: 40 },
+                { id: 'userAuthentication', label: 'User Authentication (Discord OAuth)', price: 50 },
+                { id: 'realTimeUpdates', label: 'Real-time Updates', price: 60 },
+                { id: 'customDashboard', label: 'Custom Dashboard', price: 80 },
+                { id: 'apiIntegration', label: 'Discord API Integration', price: 45 },
+                { id: 'database', label: 'Database Integration', price: 55 }
+            ];
+            
+            webFeatures.forEach(feature => {
+                const featureElement = document.createElement('div');
+                featureElement.className = 'flex items-center space-x-3 p-4 feature-bg rounded-lg';
+                featureElement.innerHTML = `
+                    <input type="checkbox" id="web-${feature.id}" class="w-4 h-4 text-white bg-gray-700 border-gray-600 rounded focus:ring-white">
+                    <label class="text-white flex-1 font-medium">${feature.label}</label>
+                    <span class="text-gray-400 text-sm font-semibold bg-gray-700/50 px-2 py-1 rounded">+$${feature.price}</span>
+                `;
+                webFeaturesContainer.appendChild(featureElement);
+                
+                document.getElementById(`web-${feature.id}`).addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!estimatorState.features.includes(feature.id)) {
+                            estimatorState.features.push(feature.id);
+                        }
+                    } else {
+                        estimatorState.features = estimatorState.features.filter(f => f !== feature.id);
+                    }
+                    calculateDiscordWebPrice();
+                });
+            });
+            
+            // Technology stack
+            document.getElementById('web-tech-stack').addEventListener('change', function() {
+                estimatorState.deliveryPreference = this.value;
+                calculateDiscordWebPrice();
+            });
+            
+            // Hosting setup
+            document.getElementById('web-hosting-setup').addEventListener('change', function() {
+                estimatorState.hostingSetup = this.checked;
+                calculateDiscordWebPrice();
+            });
+            
+            // Submit button
+            document.getElementById('submit-web').addEventListener('click', showSummaryModal);
+        }
+
+        function setupModal() {
+            // Copy summary button
+            document.getElementById('copy-summary').addEventListener('click', function() {
+                const summary = document.getElementById('summary-content').textContent;
+                navigator.clipboard.writeText(summary).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i data-lucide="check" class="h-4 w-4 mr-2"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        lucide.createIcons();
+                    }, 2000);
+                });
+            });
+            
+            // Close modal button
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('summary-modal').classList.add('hidden');
+            });
+        }
+
+        function goBackToSelection() {
+            document.getElementById('estimator-views').classList.add('hidden');
+            document.querySelectorAll('#estimator-views > div').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById('card-selection-view').classList.remove('hidden');
+            selectedCard = null;
+        }
+
+        function resetEstimatorState() {
+            estimatorState = {
+                description: '',
+                botType: '',
+                slashCommands: 5,
+                messageCommands: 0,
+                autoresponder: false,
+                features: [],
+                customStatus: '',
+                customStatusType: 'playing',
+                customColor: '#000000',
+                deliveryPreference: 'standard',
+                apiIntegrations: '',
+                hostingSetup: false,
+                aiIntegration: ''
+            };
+            
+            // Reset all inputs based on the selected card
+            if (selectedCard === 'discordBot') {
+                document.getElementById('bot-description').value = '';
+                document.getElementById('bot-type').value = '';
+                document.getElementById('slash-commands-slider').value = 5;
+                document.getElementById('slash-commands-input').value = 5;
+                document.getElementById('slash-commands-value').textContent = '5';
+                document.getElementById('message-commands-slider').value = 0;
+                document.getElementById('message-commands-input').value = 0;
+                document.getElementById('message-commands-value').textContent = '0';
+                document.getElementById('autoresponder').checked = false;
+                document.querySelectorAll('#bot-features input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('ai-integration-checkbox').checked = false;
+                document.getElementById('ai-integration-input-container').classList.add('hidden');
+                document.getElementById('ai-integration-input').value = '';
+                document.getElementById('custom-status').value = '';
+                document.getElementById('custom-status-type').value = 'playing';
+                document.getElementById('custom-color').value = '#000000';
+                document.getElementById('delivery-preference').value = 'standard';
+                document.getElementById('api-integrations').value = '';
+                document.getElementById('hosting-setup').checked = false;
+                document.getElementById('estimated-price').textContent = '$0';
+                document.getElementById('estimated-time').textContent = 'TBD';
+                document.getElementById('submit-bot').disabled = true;
+            } else if (selectedCard === 'selfbot') {
+                document.getElementById('selfbot-description').value = '';
+                document.getElementById('selfbot-type').value = '';
+                document.querySelectorAll('#selfbot-features input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('selfbot-estimated-price').textContent = '$0';
+                document.getElementById('submit-selfbot').disabled = true;
+            } else if (selectedCard === 'vencordPlugin') {
+                document.getElementById('vencord-description').value = '';
+                document.getElementById('vencord-type').value = '';
+                document.querySelectorAll('#vencord-features input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('vencord-complexity-slider').value = 1;
+                document.getElementById('vencord-complexity-value').textContent = 'Level 1';
+                document.getElementById('vencord-estimated-price').textContent = '$0';
+                document.getElementById('submit-vencord').disabled = true;
+            } else if (selectedCard === 'discordWeb') {
+                document.getElementById('web-description').value = '';
+                document.getElementById('web-type').value = '';
+                document.getElementById('web-pages-slider').value = 1;
+                document.getElementById('web-pages-input').value = 1;
+                document.querySelectorAll('#web-features input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('web-tech-stack').value = 'react';
+                document.getElementById('web-hosting-setup').checked = false;
+                document.getElementById('web-estimated-price').textContent = '$0';
+                document.getElementById('submit-web').disabled = true;
+            }
+        }
+
+        function updateEstimatorUI() {
+            if (selectedCard === 'discordBot') {
+                // Initialize Discord Bot UI
+                document.getElementById('slash-commands-slider').value = 5;
+                document.getElementById('slash-commands-input').value = 5;
+                document.getElementById('slash-commands-value').textContent = '5';
+                document.getElementById('message-commands-slider').value = 0;
+                document.getElementById('message-commands-input').value = 0;
+                document.getElementById('message-commands-value').textContent = '0';
+                document.getElementById('autoresponder').checked = false;
+                document.getElementById('custom-status-type').value = 'playing';
+                document.getElementById('custom-color').value = '#000000';
+                document.getElementById('delivery-preference').value = 'standard';
+            } else if (selectedCard === 'vencordPlugin') {
+                // Initialize Vencord Plugin UI
+                document.getElementById('vencord-complexity-slider').value = 1;
+                document.getElementById('vencord-complexity-value').textContent = 'Level 1';
+            } else if (selectedCard === 'discordWeb') {
+                // Initialize Discord Web UI
+                document.getElementById('web-pages-slider').value = 1;
+                document.getElementById('web-pages-input').value = 1;
+                document.getElementById('web-tech-stack').value = 'react';
+            }
+        }
+
+        function updateSubmitButtonState() {
+            let isValid = estimatorState.description && estimatorState.botType;
+            
+            if (selectedCard === 'discordBot') {
+                document.getElementById('submit-bot').disabled = !isValid;
+            } else if (selectedCard === 'selfbot') {
+                document.getElementById('submit-selfbot').disabled = !isValid;
+            } else if (selectedCard === 'vencordPlugin') {
+                document.getElementById('submit-vencord').disabled = !isValid;
+            } else if (selectedCard === 'discordWeb') {
+                document.getElementById('submit-web').disabled = !isValid;
+            }
+        }
+
+        function calculateDiscordBotPrice() {
+            const config = PRICING_CONFIG.discordBot;
+            const basePrice = config.basePrice[estimatorState.botType] || 0;
+            const complexityMultiplier = config.complexityMultiplier[estimatorState.botType] || 1;
+
+            let total = basePrice * complexityMultiplier;
+            total += estimatorState.slashCommands * config.slashCommandPrice;
+            total += estimatorState.messageCommands * config.messageCommandPrice;
+
+            // Add feature costs
+            estimatorState.features.forEach(feature => {
+                total += config.features[feature] || 0;
+            });
+
+            // Add styling costs
+            if (estimatorState.customStatus) total += config.styling.customStatus;
+            if (estimatorState.customColor !== '#000000') total += config.styling.customColor;
+
+            // Add extras
+            if (estimatorState.apiIntegrations) total += config.extras.apiIntegration;
+            if (estimatorState.hostingSetup) total += config.extras.hostingSetup;
+            if (estimatorState.aiIntegration) total += config.features.aiIntegration;
+
+            // Apply delivery multiplier
+            const deliveryMultiplier = config.deliveryMultiplier[estimatorState.deliveryPreference] || 1;
+            total *= deliveryMultiplier;
+
+            const roundedTotal = Math.round(total);
+            document.getElementById('estimated-price').textContent = `$${roundedTotal}`;
+            
+            // Update estimated time
+            let estimatedTime = 'TBD';
+            if (roundedTotal < 100) estimatedTime = '2 - 3 days';
+            else if (roundedTotal < 200) estimatedTime = '3 - 5 days';
+            else if (roundedTotal < 300) estimatedTime = '5 - 7 days';
+            else estimatedTime = '7 - 10 days';
+            
+            document.getElementById('estimated-time').textContent = estimatedTime;
+            
+            return roundedTotal;
+        }
+
+        function calculateSelfbotPrice() {
+            let total = PRICING_CONFIG.selfbot.basePrice;
+            estimatorState.features.forEach(feature => {
+                total += PRICING_CONFIG.selfbot.features[feature] || 0;
+            });
+            if (estimatorState.botType === 'advanced') total *= 1.3;
+            if (estimatorState.botType === 'premium') total *= 1.6;
+
+            const roundedTotal = Math.round(total);
+            document.getElementById('selfbot-estimated-price').textContent = `$${roundedTotal}`;
+            return roundedTotal;
+        }
+
+        function calculateVencordPluginPrice() {
+            let total = PRICING_CONFIG.vencordPlugin.basePrice;
+            estimatorState.features.forEach(feature => {
+                total += PRICING_CONFIG.vencordPlugin.features[feature] || 0;
+            });
+            total *= (1 + (estimatorState.slashCommands - 1) * 0.1);
+
+            const roundedTotal = Math.round(total);
+            document.getElementById('vencord-estimated-price').textContent = `$${roundedTotal}`;
+            return roundedTotal;
+        }
+
+        function calculateDiscordWebPrice() {
+            let total = PRICING_CONFIG.discordWeb.basePrice;
+            total += estimatorState.slashCommands * 25;
+            estimatorState.features.forEach(feature => {
+                total += PRICING_CONFIG.discordWeb.features[feature] || 0;
+            });
+            if (estimatorState.hostingSetup) total += 75;
+            if (estimatorState.deliveryPreference === 'nextjs') total *= 1.1;
+            if (estimatorState.deliveryPreference === 'custom') total *= 1.2;
+
+            const roundedTotal = Math.round(total);
+            document.getElementById('web-estimated-price').textContent = `$${roundedTotal}`;
+            return roundedTotal;
+        }
+
+        function getEstimatedTime(price) {
+            if (selectedCard === 'discordBot') {
+                if (price < 100) return '2 - 3 days';
+                if (price < 200) return '3 - 5 days';
+                if (price < 300) return '5 - 7 days';
+                return '7 - 10 days';
+            }
+            if (selectedCard === 'selfbot') return '3 - 5 days';
+            if (selectedCard === 'vencordPlugin') return '4 - 7 days';
+            if (selectedCard === 'discordWeb') return '1 - 3 weeks';
+            return 'TBD';
+        }
+
+        function generateSummary() {
+            const price = (() => {
+                if (selectedCard === 'discordBot') {
+                    return calculateDiscordBotPrice();
+                } else if (selectedCard === 'selfbot') {
+                    return calculateSelfbotPrice();
+                } else if (selectedCard === 'vencordPlugin') {
+                    return calculateVencordPluginPrice();
+                } else if (selectedCard === 'discordWeb') {
+                    return calculateDiscordWebPrice();
+                }
+                return 0;
+            })();
+
+            const time = (() => {
+                if (selectedCard === 'discordBot') return getEstimatedTime(price);
+                if (selectedCard === 'selfbot') return '3 - 5 days';
+                if (selectedCard === 'vencordPlugin') return '4 - 7 days';
+                if (selectedCard === 'discordWeb') return '1 - 3 weeks';
+                return 'TBD';
+            })();
+
+            const serviceType = (() => {
+                if (selectedCard === 'discordBot') return 'DISCORD BOT';
+                if (selectedCard === 'selfbot') return 'SELFBOT';
+                if (selectedCard === 'vencordPlugin') return 'VENCORD PLUGIN';
+                if (selectedCard === 'discordWeb') return 'DISCORD WEB APP';
+                return 'SERVICE';
+            })();
+            
+            let featuresList = '';
+            if (estimatorState.features.length > 0) {
+                featuresList = estimatorState.features.map(feature => {
+                    // Convert camelCase to normal text with spaces
+                    const formattedFeature = feature.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    return `- ${formattedFeature}`;
+                }).join('\n');
+            } else {
+                featuresList = '- None';
+            }
+            
+            let summary = `${serviceType} ESTIMATE GENERATED\n\n`;
+            
+            if (selectedCard === 'discordBot') {
+                summary += `🧠 Type: ${estimatorState.botType ? estimatorState.botType.charAt(0).toUpperCase() + estimatorState.botType.slice(1) : 'Not specified'}\n\n`;
+                summary += `⚙️ Slash Commands: ${estimatorState.slashCommands}\n`;
+                summary += `✉️ Message Commands: ${estimatorState.messageCommands}\n`;
+                summary += `🔁 Autoresponders: ${estimatorState.autoresponder ? 'Yes' : 'No'}\n\n`;
+            } else if (selectedCard === 'discordWeb') {
+                summary += `📄 Pages: ${estimatorState.slashCommands}\n`;
+                summary += `🛠️ Technology: ${estimatorState.deliveryPreference || 'Not specified'}\n\n`;
+            } else if (selectedCard === 'vencordPlugin') {
+                summary += `🔧 Complexity Level: ${estimatorState.slashCommands}/10\n\n`;
+            }
+            
+            summary += `📦 Features Included:\n${featuresList}\n\n`;
+            summary += `💰 Estimated Price: $${price}\n\n`;
+            summary += `⏳ Estimated Time: ${time}\n\n`;
+            summary += `--------------------------------------\n\n`;
+            summary += `📝 Your ${serviceType.toLowerCase()} description:\n`;
+            summary += `${estimatorState.description}\n\n`;
+            summary += `--------------------------------------\n\n`;
+            summary += `📎 Copy and paste this ENTIRE summary, including your description, into the "Requirements" box when ordering on Fiverr or DMing me directly.`;
+            
+            return summary;
+        }
+
+        function showSummaryModal() {
+            const summary = generateSummary();
+            document.getElementById('summary-content').textContent = summary;
+            document.getElementById('summary-modal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -6,23 +6,23 @@
     overflow: hidden;
 }
 
-.reviews-section .section-header {
+.reviews-section .skills-title {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
 }
 
-.reviews-section .section-header h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+.reviews-section .skills-title h2 {
+    margin-bottom: 1.2rem;
     color: var(--text-primary);
 }
 
-.reviews-section .section-header p {
-    color: var(--text-secondary);
+#reviews .skills-title p {
     font-size: 1.1rem;
+    color: #A1A1AA;
     max-width: 600px;
     margin: 0 auto;
 }
+
 
 /* Carousel Container */
 .reviews-carousel {
@@ -41,7 +41,7 @@
     gap: 2rem;
     padding: 2rem 0;
     position: relative;
-    min-height: 400px;
+    min-height: 500px;
     width: 100%;
     margin: 0 auto;
 }
@@ -71,8 +71,16 @@
 .review-card.left {
     left: 0;
     transform: translateX(0) scale(0.9);
-    opacity: 0.6;
+    opacity: 0.8;
     z-index: 2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.review-card.left:hover {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .review-card.center {
@@ -80,16 +88,25 @@
     transform: translateX(-50%) scale(1);
     opacity: 1;
     z-index: 3;
-    border-color: #4b5563; /* Slightly lighter border for the center card */
+    border-color: #c0c0c0;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    cursor: default;
 }
 
 .review-card.right {
     left: auto;
     right: 0;
     transform: translateX(0) scale(0.9);
-    opacity: 0.6;
+    opacity: 0.8;
     z-index: 2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.review-card.right:hover {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .review-card.hidden {
@@ -150,7 +167,19 @@
 .reviewer-country {
     margin: 0.15rem 0 0;
     font-size: 0.8rem;
+    line-height: 1.2;
     color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reviewer-country .fi {
+    width: auto;
+    height: 0.9em; /* Match the text height */
+    aspect-ratio: 4/3; /* Maintain flag aspect ratio */
+    border-radius: 1px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
 /* Review Divider */
@@ -429,19 +458,37 @@
 /* Responsive Styles */
 @media (max-width: 1024px) {
     .review-card {
-        min-width: 300px;
-        max-width: 350px;
+        min-width: 280px;
+        max-width: 320px;
+        padding: 1.5rem;
+    }
+    
+    .review-content {
+        font-size: 0.9rem;
+        height: 120px;
+    }
+    
+    .review-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
 
 @media (max-width: 768px) {
     .reviews-carousel {
-        padding: 0 3rem;
+        padding: 0 2rem;
+    }
+    
+    .reviews-container {
+        min-height: 600px;
     }
     
     .review-card {
         min-width: 100%;
         max-width: 100%;
+        padding: 1.5rem;
+        min-height: 400px;
     }
     
     .review-card.left,
@@ -453,20 +500,67 @@
         transform: translateX(-50%) scale(1);
         opacity: 1;
     }
+    
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .reviewer-info {
+        width: 100%;
+    }
+    
+    .review-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .review-actions {
+        width: 100%;
+    }
+    
+    .view-review-btn {
+        margin-top: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
     .reviews-carousel {
-        padding: 0 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .reviews-container {
+        min-height: 550px;
+    }
+    
+    .review-card {
+        padding: 1.25rem;
+        min-height: 500px;
     }
     
     .carousel-button {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
     }
     
     .carousel-button svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
+    }
+    
+    .review-content {
+        font-size: 0.85rem;
+        height: 140px;
+    }
+    
+    .pagination-indicators {
+        margin-top: 1.25rem;
+    }
+    
+    .reviews-cta .custom-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
     }
 }

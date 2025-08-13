@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const reviewsContainer = document.querySelector('.reviews-container');
-    const prevButton = document.querySelector('.carousel-button.prev');
-    const nextButton = document.querySelector('.carousel-button.next');
     
     // State
     let currentIndex = 0;
@@ -72,11 +70,64 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.length > maxLength;
     }
     
+    // Map country names to ISO 3166-1 alpha-2 country codes for flags
+    function getCountryFlagCode(country) {
+        const countryMap = {
+            // Common countries
+            'united states': 'us',
+            'usa': 'us',
+            'united kingdom': 'gb',
+            'uk': 'gb',
+            'germany': 'de',
+            'france': 'fr',
+            'spain': 'es',
+            'italy': 'it',
+            'netherlands': 'nl',
+            'australia': 'au',
+            'canada': 'ca',
+            'japan': 'jp',
+            'south korea': 'kr',
+            'russia': 'ru',
+            'brazil': 'br',
+            'mexico': 'mx',
+            'india': 'in',
+            'china': 'cn',
+            'sweden': 'se',
+            'norway': 'no',
+            'denmark': 'dk',
+            'finland': 'fi',
+            'poland': 'pl',
+            'switzerland': 'ch',
+            'austria': 'at',
+            'belgium': 'be',
+            'portugal': 'pt',
+            'greece': 'gr',
+            'turkey': 'tr',
+            'egypt': 'eg',
+            'south africa': 'za',
+            'new zealand': 'nz',
+            'singapore': 'sg',
+            'malaysia': 'my',
+            'thailand': 'th',
+            'vietnam': 'vn',
+            'indonesia': 'id',
+            'philippines': 'ph',
+            'saudi arabia': 'sa',
+            'united arab emirates': 'ae',
+            'israel': 'il'
+            // Add more countries as needed
+        };
+        
+        const normalizedCountry = country.toLowerCase().trim();
+        return countryMap[normalizedCountry] || 'globe'; // 'globe' as fallback
+    }
+
     // Create review card HTML
     function createReviewCard(review, position) {
         const maxLength = 350; // Increased to show more text
         const needsMore = needsTruncation(review.review, maxLength);
         const displayText = needsMore ? formatReviewText(review.review, maxLength) : review.review;
+        const flagCode = getCountryFlagCode(review.country);
         
         return `
             <div class="review-card ${position}">
@@ -88,7 +139,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <h4 class="reviewer-name">${review.name}</h4>
                                 ${review.isRepeatClient ? '<span class="reviewer-badge">•&nbsp; Repeat Client</span>' : ''}
                             </div>
-                            <p class="reviewer-country">${review.country}</p>
+                            <p class="reviewer-country">
+                                <span class="fi fi-${flagCode}"></span>
+                                ${review.country}
+                            </p>
                         </div>
                     </div>
                     <div class="review-divider"></div>
@@ -98,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="review-content">
                         ${displayText}
-                        ${needsMore ? `<a href="${review.link}" target="_blank" class="read-more">See more</a>` : ''}
+                        ${needsMore ? `<a href="https://www.fiverr.com/nextcodeworks?source=gig_page" target="_blank" class="read-more">See more</a>` : ''}
                     </div>
                 </div>
                 
@@ -119,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span>${review.duration}</span>
                         </div>
                     </div>
-                    <a href="${review.link}" target="_blank" class="custom-button secondary">
+                    <a href="https://www.fiverr.com/nextcodeworks?source=gig_page" target="_blank" class="custom-button secondary">
                         View on ${review.platform}
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 12h14"></path>
@@ -230,9 +284,19 @@ document.addEventListener('DOMContentLoaded', function() {
         renderReviews();
     }
     
-    // Event Listeners
-    nextButton.addEventListener('click', nextReview);
-    prevButton.addEventListener('click', prevReview);
+    // Handle card clicks
+    function handleCardClicks() {
+        const leftCard = document.querySelector('.review-card.left');
+        const rightCard = document.querySelector('.review-card.right');
+        
+        if (leftCard) {
+            leftCard.addEventListener('click', prevReview);
+        }
+        
+        if (rightCard) {
+            rightCard.addEventListener('click', nextReview);
+        }
+    }
     
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
@@ -271,6 +335,64 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Auto-rotation variables
+    let rotationInterval;
+    const ROTATION_INTERVAL_MS = 6000; // 6 seconds
+    
+    // Start auto-rotation
+    function startAutoRotation() {
+        // Clear any existing interval to prevent multiple intervals running
+        stopAutoRotation();
+        // Start new interval
+        rotationInterval = setInterval(() => {
+            nextReview();
+        }, ROTATION_INTERVAL_MS);
+    }
+    
+    // Stop auto-rotation
+    function stopAutoRotation() {
+        if (rotationInterval) {
+            clearInterval(rotationInterval);
+            rotationInterval = null;
+        }
+    }
+    
+    // Pause auto-rotation when user interacts with the carousel
+    function handleUserInteraction() {
+        stopAutoRotation();
+        // Restart rotation after a delay
+        setTimeout(startAutoRotation, ROTATION_INTERVAL_MS * 2);
+    }
+    
     // Initialize
-    fetchReviews();
+    fetchReviews().then(() => {
+        handleCardClicks();
+        startAutoRotation();
+    });
+    
+    // Re-attach event listeners after re-rendering
+    const originalRenderReviews = renderReviews;
+    renderReviews = function() {
+        originalRenderReviews.apply(this, arguments);
+        handleCardClicks();
+    };
+    
+    // Pause auto-rotation on user interaction
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            handleUserInteraction();
+        }
+    });
+    
+    // Also pause on card clicks
+    document.querySelector('.reviews-carousel')?.addEventListener('click', handleUserInteraction);
+    
+    // Pause auto-rotation when window loses focus
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopAutoRotation();
+        } else {
+            startAutoRotation();
+        }
+    });
 });
