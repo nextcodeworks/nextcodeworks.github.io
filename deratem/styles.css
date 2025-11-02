@@ -237,7 +237,6 @@ select:focus {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 5px;
     width: 100%;
     max-width: 300px;
 }
@@ -260,6 +259,13 @@ select:focus {
 .btn-secondary:hover {
     background: #cbd5e0;
     transform: translateY(-1px);
+}
+
+.full-width {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    text-align: center;
 }
 
 .actions {
@@ -513,6 +519,74 @@ select:focus {
     margin-bottom: 8px;
     font-weight: 500;
     word-wrap: break-word;
+}
+
+/* Pest item styles */
+.pest-item {
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.pest-item > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pest-name {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.pest-name:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.infestation-level {
+    min-width: 120px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.infestation-level:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.remove-pest-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.remove-pest-btn:hover {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
 }
 
 /* Form validation styles */
