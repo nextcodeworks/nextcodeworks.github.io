@@ -1,0 +1,658 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    padding: 0 10px;
+}
+
+header h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    word-wrap: break-word;
+}
+
+header p {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    opacity: 0.9;
+    word-wrap: break-word;
+}
+
+.form-container {
+    background: white;
+    border-radius: 15px;
+    padding: clamp(20px, 4vw, 40px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-section {
+    margin-bottom: clamp(20px, 4vw, 40px);
+    padding-bottom: clamp(15px, 3vw, 30px);
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h2 {
+    color: #4a5568;
+    font-size: clamp(1.3rem, 4vw, 1.5rem);
+    margin-bottom: clamp(15px, 3vw, 20px);
+    padding-bottom: clamp(8px, 2vw, 10px);
+    border-bottom: 2px solid #667eea;
+    word-wrap: break-word;
+}
+
+.form-subsection {
+    margin-bottom: clamp(15px, 3vw, 25px);
+    padding: clamp(15px, 3vw, 20px);
+    background: #f8fafc;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.form-subsection h3 {
+    color: #4a5568;
+    font-size: clamp(1.1rem, 3vw, 1.2rem);
+    margin-bottom: clamp(12px, 2vw, 15px);
+    word-wrap: break-word;
+}
+
+.form-group {
+    margin-bottom: clamp(15px, 3vw, 20px);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    word-wrap: break-word;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="tel"],
+textarea,
+select {
+    width: 100%;
+    padding: clamp(10px, 2vw, 12px) clamp(12px, 2vw, 16px);
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: clamp(14px, 3vw, 16px);
+    transition: all 0.3s ease;
+    background: white;
+    max-width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.checkbox-group,
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.checkbox-group label,
+.radio-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    word-wrap: break-word;
+}
+
+.checkbox-group label:hover,
+.radio-group label:hover {
+    background-color: #f7fafc;
+}
+
+.checkbox-group input[type="checkbox"],
+.radio-group input[type="radio"] {
+    margin-right: clamp(8px, 2vw, 10px);
+    transform: scale(1.1);
+    min-width: 16px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 10px);
+    flex-wrap: wrap;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Signature Styles */
+.signature-container {
+    margin-top: 10px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: clamp(10px, 2vw, 15px);
+    background: white;
+    overflow: hidden;
+}
+
+.signature-container canvas {
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: transparent !important;
+    cursor: crosshair;
+    display: block;
+    margin-bottom: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+.signature-stamp-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(15px, 3vw, 30px);
+    align-items: stretch;
+}
+
+.signature-stamp-container .signature-container,
+.signature-stamp-container .stamp-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.stamp-container {
+    margin-top: 10px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: clamp(10px, 2vw, 15px);
+    background: white;
+    text-align: center;
+}
+
+.stamp-container img,
+#technicianSignatureContainer img {
+    max-width: min(200px, 100%);
+    height: auto;
+    background: transparent !important;
+}
+
+#technicianSignatureContainer {
+    text-align: center;
+    padding: clamp(15px, 3vw, 20px);
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+}
+
+/* Button Styles */
+.btn-primary,
+.btn-secondary {
+    padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 24px);
+    border: none;
+    border-radius: 8px;
+    font-size: clamp(14px, 3vw, 16px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e0;
+    transform: translateY(-1px);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(10px, 2vw, 15px);
+    justify-content: center;
+    padding-top: clamp(20px, 4vw, 30px);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    overflow: auto;
+    padding: 10px;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 2% auto;
+    padding: clamp(20px, 4vw, 30px);
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: min(800px, 95vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: none !important;
+    left: auto !important;
+    right: auto !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: clamp(24px, 5vw, 28px);
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    position: absolute;
+    top: clamp(10px, 2vw, 15px);
+    right: clamp(15px, 3vw, 20px);
+    z-index: 1001;
+}
+
+.close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Chemical items and search */
+.chemicals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.chemical-item {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 15px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chemical-item:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chemical-checkbox {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+}
+
+.chemical-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.chemical-checkbox span {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.quantity-input {
+    width: 80px;
+    padding: 6px 8px;
+    margin-left: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.quantity-input:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 1px #4299e1;
+}
+
+#chemicalSearch {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 15px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+#chemicalSearch:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 1px #4299e1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chemicals-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chemical-item {
+        padding: 10px 12px;
+    }
+    
+    .quantity-input {
+        width: 70px;
+    }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .container {
+        padding: 20px;
+        max-width: 1200px;
+    }
+    
+    .form-container {
+        padding: 40px;
+    }
+    
+    header {
+        margin-bottom: 40px;
+    }
+    
+    .signature-stamp-container {
+        flex-direction: row;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        width: auto;
+    }
+    
+    .modal-content {
+        margin: 2% auto;
+        padding: 30px;
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 5px;
+    }
+    
+    .form-container {
+        padding: 15px;
+        border-radius: 10px;
+    }
+    
+    .form-section {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+    
+    .form-subsection {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .actions {
+        gap: 8px;
+    }
+    
+    .modal-content {
+        margin: 1% auto;
+        padding: 15px;
+        width: 98%;
+        max-height: 95vh;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white !important;
+        overflow: visible !important;
+    }
+    
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+    
+    .form-container {
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+    }
+    
+    .actions,
+    .modal {
+        display: none !important;
+    }
+}
+
+/* Signature alignment fixes */
+#clientSignature,
+#surveySignature {
+    background: transparent !important;
+    border: 1px solid #d1d5db !important;
+}
+
+
+
+#phoneSignatureContainer p {
+    margin-bottom: 8px;
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+/* Form validation styles */
+input:invalid,
+textarea:invalid {
+    border-color: #fc8181;
+}
+
+input:valid,
+textarea:valid {
+    border-color: #68d391;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Success message */
+.success-message {
+    background: #c6f6d5;
+    border: 2px solid #68d391;
+    color: #22543d;
+    padding: clamp(12px, 2vw, 15px);
+    border-radius: 8px;
+    margin: 15px 0;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+/* Error message */
+.error-message {
+    background: #fed7d7;
+    border: 2px solid #fc8181;
+    color: #742a2a;
+    padding: clamp(12px, 2vw, 15px);
+    border-radius: 8px;
+    margin: 15px 0;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+/* Body lock when modal is open */
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ensure main content doesn't shift */
+.main-content {
+    transition: none !important;
+}
+
+/* Additional fixes for modal positioning */
+.modal {
+    transform: none !important;
+}
+
+.modal-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none !important;
+}
+
+/* PDF specific styles for preview */
+.pdf-preview-content {
+    width: 100%;
+    max-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border: 3px solid #02398b;
+    border-radius: 15px;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: none;
+    }
+    
+    .checkbox-group label:hover,
+    .radio-group label:hover {
+        background-color: transparent;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="tel"],
+    textarea,
+    select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .form-container {
+        border: 2px solid #000;
+    }
+    
+    .form-section h2 {
+        border-bottom: 3px solid #000;
+    }
+    
+    .form-subsection {
+        border-left: 4px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: none;
+    }
+}
+
+/* Orientation specific fixes */
+@media (max-width: 768px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 85vh;
+        margin: 1% auto;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+}
