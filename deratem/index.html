@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deratem - Generátor Protokolů</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Deratem - Generátor Protokolů</h1>
+            <p>Profesionální generátor protokolů pro deratizaci a dezinsekci</p>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <form id="protocolForm">
+                    <!-- Základní informace o protokolu -->
+                    <section class="form-section">
+                        <h2>Základní informace o protokolu</h2>
+                        <div class="form-group">
+                            <label for="protocolNumber">Číslo protokolu</label>
+                            <input type="text" id="protocolNumber" name="protocolNumber" pattern="\d{4}_\d{4}" title="Formát: RRRR_XXXX (např. 2025_0001)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="interventionPlace">Místo zásahu</label>
+                            <input type="text" id="interventionPlace" name="interventionPlace" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="interventionDate">Datum zásahu <span class="required">*</span></label>
+                            <input type="date" id="interventionDate" name="interventionDate" required>
+                        </div>
+                    </section>
+
+                    <!-- Odběratel -->
+                    <section class="form-section">
+                        <h2>Odběratel</h2>
+                        <div class="form-group">
+                            <label for="customer">Jméno/Název společnosti</label>
+                            <input type="text" id="customer" name="customer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ico">IČO (volitelné)</label>
+                            <input type="text" id="ico" name="ico">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Adresa/Sídlo</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientName">Kontaktní osoba</label>
+                            <input type="text" id="clientName" name="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientPhone">Telefon</label>
+                            <input type="text" id="clientPhone" name="clientPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientEmail">E-mail</label>
+                            <input type="email" id="clientEmail" name="clientEmail">
+                        </div>
+                    </section>
+
+                    <!-- Typ zásahu -->
+                    <section class="form-section">
+                        <h2>Typ zásahu</h2>
+                        <div class="form-group">
+                            <label>Typ zásahu <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="interventionType" value="Deratizace" required> Deratizace</label>
+                                <label><input type="radio" name="interventionType" value="Dezinsekce"> Dezinsekce</label>
+                                <label><input type="radio" name="interventionType" value="Dezinfekce"> Dezinfekce</label>
+                                <label><input type="radio" name="interventionType" value="Dezodorizace"> Dezodorizace</label>
+                                <label><input type="radio" name="interventionType" value="Jiný" id="otherInterventionType"> Jiný</label>
+                            </div>
+                            <div id="otherInterventionTypeSpec" class="hidden" style="margin-top: 5px;">
+                                <input type="text" name="otherInterventionTypeSpec" id="otherInterventionTypeInput" placeholder="Zadejte typ zásahu">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Druh práce -->
+                    <section class="form-section">
+                        <h2>Druh práce</h2>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="workType" value="Úklid / vyklízení"> Úklid / vyklízení</label>
+                            <label><input type="checkbox" name="workType" value="Odvoz a likvidace odpadu"> Odvoz a likvidace odpadu</label>
+                            <label><input type="checkbox" name="workType" value="Monitoring výskytu škůdců"> Monitoring výskytu škůdců</label>
+                            <label><input type="checkbox" name="workType" value="Monitoring a vyhodnocení účinnosti"> Monitoring a vyhodnocení účinnosti</label>
+                            <label><input type="checkbox" name="workType" value="Pokládka / doplnění DRT staniček"> Pokládka / doplnění DRT staniček</label>
+                            <label><input type="checkbox" name="workType" value="Vizuální prohlídka"> Vizuální prohlídka</label>
+                            <label><input type="checkbox" name="workType" value="Bariérový postřik"> Bariérový postřik</label>
+                            <label><input type="checkbox" name="workType" value="Plošný postřik"> Plošný postřik</label>
+                            <label><input type="checkbox" name="workType" value="Jiné" id="otherWorkType"> Jiné</label>
+                            <div id="otherWorkTypeSpec" class="hidden">
+                                <input type="text" name="otherWorkTypeSpec" placeholder="Specifikace">
+                            </div>
+                        </div>
+                    </section>
+
+<!-- Zjištění škůdci -->
+                    <section class="form-section">
+                        <h2>Zjištění škůdci</h2>
+                        <div class="form-subsection">
+                            <h3>Hlodavci</h3>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="pests" value="Potkan"> Potkan</label>
+                                <label><input type="checkbox" name="pests" value="Krysa"> Krysa</label>
+                                <label><input type="checkbox" name="pests" value="Myš domácí"> Myš domácí</label>
+                                <label><input type="checkbox" name="pests" value="Hraboš polní"> Hraboš polní</label>
+                                <label><input type="checkbox" name="pests" value="Kuna skalní"> Kuna skalní</label>
+                                <label><input type="checkbox" name="pests" value="Holub"> Holub</label>
+                            </div>
+                        </div>
+                        <div class="form-subsection">
+                            <h3>Hmyz</h3>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="pests" value="Šváb obecný"> Šváb obecný</label>
+                                <label><input type="checkbox" name="pests" value="Rus domácí"> Rus domácí</label>
+                                <label><input type="checkbox" name="pests" value="Šváb americký"> Šváb americký</label>
+                                <label><input type="checkbox" name="pests" value="Cvrček"> Cvrček</label>
+                                <label><input type="checkbox" name="pests" value="Vosa"> Vosa</label>
+                                <label><input type="checkbox" name="pests" value="Sršeň"> Sršeň</label>
+                                <label><input type="checkbox" name="pests" value="Mravenec"> Mravenec</label>
+                                <label><input type="checkbox" name="pests" value="Mravenec Faraon"> Mravenec Faraon</label>
+                                <label><input type="checkbox" name="pests" value="Mouchy"> Mouchy</label>
+                                <label><input type="checkbox" name="pests" value="Zaviječ"> Zaviječ</label>
+                                <label><input type="checkbox" name="pests" value="Rybenka"> Rybenka</label>
+                                <label><input type="checkbox" name="pests" value="Štěnice"> Štěnice</label>
+                                <label><input type="checkbox" name="pests" value="Blecha"> Blecha</label>
+                                <label><input type="checkbox" name="pests" value="Klíště"> Klíště</label>
+                                <label><input type="checkbox" name="pests" value="Čmelíci"> Čmelíci</label>
+                                <label><input type="checkbox" name="pests" value="Jiní škůdci" id="otherPests"> Jiní škůdci</label>
+                                <div id="otherPestsSpec" class="hidden">
+                                    <input type="text" name="otherPestsSpec" placeholder="Specifikace">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Nutnost dalšího zásahu -->
+                    <section class="form-section">
+                        <h2>Nutnost dalšího zásahu</h2>
+                        <div class="radio-group">
+                            <label><input type="radio" name="furtherIntervention" value="Ano"> Ano</label>
+                            <label><input type="radio" name="furtherIntervention" value="Ne"> Ne</label>
+                            <label><input type="radio" name="furtherIntervention" value="Dle plánu"> Dle plánu</label>
+                        </div>
+                    </section>
+
+                    <!-- Po dohodě s odběratelem použit biocid -->
+                    <section class="form-section">
+                        <h2>Po dohodě s odběratelem použit biocid</h2>
+                        <div class="radio-group">
+                            <label><input type="radio" name="biocideAgreement" value="Ano"> Ano</label>
+                            <label><input type="radio" name="biocideAgreement" value="Ne"> Ne</label>
+                        </div>
+                    <!-- Po dohodě s odběratelem byla ponechána nástraha v deratizačních staničkách -->
+                    <section class="form-section">
+                        <h2>Po dohodě s odběratelem byla ponechána nástraha v deratizačních staničkách</h2>
+                        <div class="radio-group">
+                            <label><input type="radio" name="baitLeftInStations" value="Ano"> Ano</label>
+                            <label><input type="radio" name="baitLeftInStations" value="Ne"> Ne</label>
+                        </div>
+                    </section>
+
+                    <!-- Stupeň zamoření -->
+                    <section class="form-section">
+                        <h2>Stupeň zamoření</h2>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" id="noPestsCheckbox" name="noPests"> Žádný výskyt škůdců</label>
+                            </div>
+                        </div>
+                        <div id="pestInfestationContainer">
+                            <!-- Dynamic pest infestation items will be added here -->
+                        </div>
+                        <button type="button" id="addPestBtn" class="btn-secondary" style="margin-top: 10px;">
+                            + Přidat škůdce
+                        </button>
+                        <!-- Template for new pest infestation item -->
+                        <template id="pestInfestationTemplate">
+                            <div class="pest-item" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                                    <div style="flex: 1;">
+                                        <input type="text" class="pest-name" placeholder="Název škůdce" style="width: 100%;">
+                                    </div>
+                                    <div>
+                                        <select class="infestation-level" style="min-width: 120px;">
+                                            <option value="Nízký">Nízký</option>
+                                            <option value="Střední">Střední</option>
+                                            <option value="Vysoký">Vysoký</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="remove-pest-btn" style="color: #e53e3e;">
+                                        ×
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </section>
+
+                    <!-- Přípravky a nástroje -->
+                    <section class="form-section">
+                        <h2>Přípravky a nástroje</h2>
+                        
+                        <!-- Search box -->
+                        <div class="form-group">
+                            <label for="chemicalSearch">Vyhledat přípravek</label>
+                            <input type="text" id="chemicalSearch" class="form-control" placeholder="Zadejte název přípravku...">
+                        </div>
+                        
+                        <div id="chemicalsContainer" class="chemicals-grid">
+                            <!-- Deratizace -->
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Deratizační stanička potkan" data-has-quantity="true">
+                                    <span>Deratizační stanička potkan</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Deratizační stanička myš" data-has-quantity="true">
+                                    <span>Deratizační stanička myš</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Štítek" data-has-quantity="true">
+                                    <span>Štítek</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Hubex" data-has-quantity="true">
+                                    <span>Hubex</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Storm Secure" data-has-quantity="true">
+                                    <span>Storm Secure</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Selontra" data-has-quantity="true">
+                                    <span>Selontra</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <!-- Deratizace - Kvalitativní -->
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Detex with Lumitrack" data-has-quantity="true">
+                                    <span>Detex with Lumitrack</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Super Expel - kuny" data-has-quantity="true">
+                                    <span>Super Expel - kuny</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Racumin Pěna" data-has-quantity="true">
+                                    <span>Racumin Pěna</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Kalif" data-has-quantity="true">
+                                    <span>Kalif</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Argonit" data-has-quantity="true">
+                                    <span>Argonit</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Refresh na pachy" data-has-quantity="true">
+                                    <span>Refresh na pachy</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <!-- Dezinsekce -->
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Fendona 6SC" data-has-quantity="true">
+                                    <span>Fendona 6SC</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Mythic 10 SC" data-has-quantity="true">
+                                    <span>Mythic 10 SC</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Provecta 20" data-has-quantity="true">
+                                    <span>Provecta 20</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Bombex farumy" data-has-quantity="true">
+                                    <span>Bombex farumy</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Cytrol forte" data-has-quantity="true">
+                                    <span>Cytrol forte</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <!-- Dezinsekce - Kvalitativní -->
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Cimex-out" data-has-quantity="true">
+                                    <span>Cimex-out</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="AquaPy" data-has-quantity="true">
+                                    <span>AquaPy</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Monitor na lezoucí hmyz" data-has-quantity="true">
+                                    <span>Monitor na lezoucí hmyz</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Lepová deska" data-has-quantity="true">
+                                    <span>Lepová deska</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Cytrol 10/4 ULV" data-has-quantity="true">
+                                    <span>Cytrol 10/4 ULV</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Monitor s feromonem" data-has-quantity="true">
+                                    <span>Monitor s feromonem</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Imidasect" data-has-quantity="true">
+                                    <span>Imidasect</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="ImidasectAnts" data-has-quantity="true">
+                                    <span>ImidasectAnts</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Fourmidor" data-has-quantity="true">
+                                    <span>Fourmidor</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Permex 30-100ml 5l" data-has-quantity="true">
+                                    <span>Permex 30-100ml 5l</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Cytrol Super SG" data-has-quantity="true">
+                                    <span>Cytrol Super SG</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Vulkán dýmovnice" data-has-quantity="true">
+                                    <span>Vulkán dýmovnice</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <!-- Dezinfekce -->
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Chirox sáček 50g" data-has-quantity="true">
+                                    <span>Chirox sáček 50g</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                                </label>
+                            </div>
+                            
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Savo" data-has-quantity="true">
+                                    <span>Savo</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství" style="display: none;">
+                        </div>
+                    </section>
+
+                    <!-- Doporučené akce -->
+                    <section class="form-section">
+                        <h2>Doporučené akce</h2>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="recommendedActions" value="Důkladný úklid"> Důkladný úklid</label>
+                            <label><input type="checkbox" name="recommendedActions" value="Pokračovat v monitoringu"> Pokračovat v monitoringu</label>
+                            <label><input type="checkbox" name="recommendedActions" value="Zamezit v pronikání škůdců"> Zamezit v pronikání škůdců</label>
+                            <label><input type="checkbox" name="recommendedActions" value="Zamezit v pronikání škůdců"> Zavírat dveře</label>
+                            <label><input type="checkbox" name="recommendedActions" value="Jiné doporučení" id="otherRecommendation"> Jiné doporučení</label>
+                            <div id="otherRecommendationSpec" class="hidden">
+                                <input type="text" name="otherRecommendationSpec" placeholder="Specifikace">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Bezpečnostní opatření -->
+                    <section class="form-section">
+                        <h2>Bezpečnostní opatření</h2>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="safetyMeasures" value="Nevstupovat do ošetřených prostor nejméně 8 hod"> Nevstupovat do ošetřených prostor nejméně 8 hod</label>
+                            <label><input type="checkbox" name="safetyMeasures" value="Nevstupovat 12 hod před úplným zaschnutím"> Nevstupovat 12 hod před úplným zaschnutím</label>
+                            <label><input type="checkbox" name="safetyMeasures" value="Neomývat místa aplikace"> Neomývat místa aplikace</label>
+                            <label><input type="checkbox" name="safetyMeasures" value="Nepoužívat žádné dezinsekční přípravky"> Nepoužívat žádné dezinsekční přípravky</label>
+                            <label><input type="checkbox" name="safetyMeasures" value="Nemanipulovat s nástrahou ani deratizačními staničkami"> Nemanipulovat s nástrahou ani deratizačními staničkami</label>
+                            <label><input type="checkbox" name="safetyMeasures" value="Jiné opatření" id="otherSafety"> Jiné opatření</label>
+                            <div id="otherSafetySpec" class="hidden">
+                                <input type="text" name="otherSafetySpec" placeholder="Specifikace">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Podpis technika -->
+                    <section class="form-section hidden">
+                        <h2>Podpis technika</h2>
+                        <div class="signature-stamp-container">
+                            <div class="signature-container">
+                                <label>Podpis technika</label>
+                                <div id="technicianSignatureContainer">
+                                    <img id="technicianSignature" src="podpis.png" alt="Podpis technika">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Dodavatel -->
+                    <section class="form-section hidden">
+                        <h2>Dodavatel</h2>
+                        <div class="supplier-info">
+                            <p><strong>Tomáš Šmídek – Deratem</strong></p>
+                            <p>Štětínská 375/14, Praha 8</p>
+                            <p>IČO: 18633617</p>
+                            <p>Č. účtu: 1312513790297/0100</p>
+                            <p>Tel.: 777 333 164</p>
+                            <p>E-mail: info@deratem.cz</p>
+                        </div>
+                    </section>
+
+                    <!-- Podpis klienta -->
+                    <section class="form-section">
+                        <h2>Podpis klienta</h2>
+                        <div class="form-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="phoneSignature" name="phoneSignature">
+                                Podpis po telefonu
+                            </label>
+                            <div id="phoneSignatureContainer" class="hidden">
+                                <p>Klient byl informován o obsahu protokolu a souhlasí s ním po telefonu.</p>
+                                <p>Jméno klienta: <span id="clientNameDisplay"></span></p>
+                                <p>Datum: <span id="phoneSignatureDate"></span></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Podpis klienta</label>
+                            <div class="signature-container">
+                                <canvas id="clientSignature" width="400" height="150"></canvas>
+                                <button type="button" id="clearClientSignature" class="btn-secondary">Vymazat podpis</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Průzkum proveden za účasti -->
+                    <section class="form-section">
+                        <h2>Průzkum proveden za účasti</h2>
+                        <div class="form-group">
+                            <label for="surveyName">Jméno</label>
+                            <input type="text" id="surveyName" name="surveyName">
+                        </div>
+                        <div class="form-group">
+                            <label>Podpis účasti</label>
+                            <div class="signature-container">
+                                <canvas id="surveySignature" width="400" height="150"></canvas>
+                                <button type="button" id="clearSurveySignature" class="btn-secondary">Vymazat podpis</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Action Buttons -->
+                    <section class="form-section actions">
+                        <button type="button" id="generatePdf" class="btn-primary">Generovat PDF</button>
+                        <button type="button" id="viewPdf" class="btn-secondary">Zobrazit PDF</button>
+                        <button type="button" id="sendEmail" class="btn-primary" disabled>Odeslat e-mailem</button>
+                        <button type="button" id="clearForm" class="btn-secondary">Vyčistit formulář</button>
+                        <button type="button" id="settings" class="btn-secondary" disabled>Nastavení</button>
+                    </section>
+                </form>
+            </div>
+        </main>
+
+        <!-- PDF Preview Modal -->
+        <div id="pdfPreviewModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Náhled PDF</h2>
+                <div id="pdfPreview"></div>
+                <div class="modal-actions">
+                    <button id="downloadPdf" class="btn-primary">Stáhnout PDF</button>
+                    <button id="closePreview" class="btn-secondary">Zavřít</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Nastavení</h2>
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="emailServiceId">Email Service ID</label>
+                        <input type="text" id="emailServiceId" name="emailServiceId">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailTemplateId">Email Template ID</label>
+                        <input type="text" id="emailTemplateId" name="emailTemplateId">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailPublicKey">Email Public Key</label>
+                        <input type="text" id="emailPublicKey" name="emailPublicKey">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Uložit nastavení</button>
+                        <button type="button" id="closeSettings" class="btn-secondary">Zavřít</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <h2 id="confirmationTitle">Potvrzení akce</h2>
+                <p id="confirmationMessage">Opravdu chcete provést tuto akci?</p>
+                <div class="modal-actions">
+                    <button id="confirmAction" class="btn-primary">Ano</button>
+                    <button id="cancelAction" class="btn-secondary">Ne</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Handle phone signature checkbox
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneSignatureCheckbox = document.getElementById('phoneSignature');
+            const phoneSignatureContainer = document.getElementById('phoneSignatureContainer');
+            const clientNameInput = document.getElementById('customer');
+            const clientNameDisplay = document.getElementById('clientNameDisplay');
+            const phoneSignatureDate = document.getElementById('phoneSignatureDate');
+            
+            // Toggle phone signature container visibility
+            function togglePhoneSignature() {
+                if (phoneSignatureCheckbox.checked) {
+                    phoneSignatureContainer.classList.remove('hidden');
+                    // Update client name display
+                    clientNameDisplay.textContent = clientNameInput.value || 'Nezadáno';
+                    // Update date
+                    const today = new Date();
+                    phoneSignatureDate.textContent = today.toLocaleDateString('cs-CZ');
+                } else {
+                    phoneSignatureContainer.classList.add('hidden');
+                }
+            }
+            
+            // Initialize
+            phoneSignatureCheckbox.addEventListener('change', togglePhoneSignature);
+            
+            // Update client name when it changes
+            clientNameInput.addEventListener('input', function() {
+                if (phoneSignatureCheckbox.checked) {
+                    clientNameDisplay.textContent = this.value || 'Nezadáno';
+                }
+            });
+            
+            // Handle PDF generation for phone signature
+            const originalGeneratePdf = window.generatePdf;
+            window.generatePdf = function() {
+                if (phoneSignatureCheckbox.checked) {
+                    // Hide the signature container for PDF
+                    phoneSignatureContainer.classList.add('hidden');
+                    
+                    // Generate PDF
+                    originalGeneratePdf();
+                    
+                    // Show it back
+                    setTimeout(() => {
+                        phoneSignatureContainer.classList.remove('hidden');
+                    }, 100);
+                } else {
+                    originalGeneratePdf();
+                }
+            };
+        });
+        
+        // Function to fill the form with test data
+        function fillTestData() {
+            // Czech names and words with diacritics
+            const czechNames = ['Jan Novák', 'Petr Svoboda', 'Jana Černá', 'Marie Dvořáková', 'Tomáš Šmídek'];
+            const czechWords = ['Praha', 'Brno', 'Ostrava', 'Plzeň', 'Olomouc', 'Liberec', 'České Budějovice', 'Hradec Králové', 'Ústí nad Labem', 'Pardubice'];
+            const czechStreets = ['Václavské', 'Národní', '28. října', 'Revoluční', 'Karlovo', 'Jungmannovo'];
+            
+            // Random number generator
+            const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+            const randomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            
+            // Helper function to safely set value if element exists
+            const setValue = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value;
+                    return true;
+                }
+                return false;
+            };
+
+            // Generate random Czech address
+            const generateAddress = () => {
+                return `${randomItem(czechStreets)} ${randomInt(1, 500)}/${randomInt(1, 20)}, ${randomInt(100, 700)} 00 ${randomItem(czechWords)}`;
+            };
+            
+            // Generate random date in YYYY-MM-DD format
+            const randomDate = () => {
+                const start = new Date();
+                const end = new Date();
+                end.setDate(start.getDate() + 30);
+                const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+                return date.toISOString().split('T')[0];
+            };
+            
+            // Generate random phone number
+            const randomPhone = () => `+420 ${randomInt(600, 799)} ${randomInt(100, 999)} ${randomInt(100, 999)}`;
+            
+            // Generate random email
+            const randomEmail = (name) => {
+                const domains = ['gmail.com', 'seznam.cz', 'email.cz', 'centrum.cz', 'atlas.cz'];
+                const [firstName, lastName] = name.toLowerCase().split(' ');
+                return `${firstName}.${lastName || 'test'}${randomInt(1, 100)}@${randomItem(domains)}`;
+            };
+            
+            // Generate random IČO
+            const randomIco = () => randomInt(10000000, 99999999).toString();
+            
+            // Generate random DIČ
+            const randomDic = () => `CZ${randomIco()}`;
+            
+            // Generate random protocol number
+            const randomProtocolNumber = () => {
+                const year = new Date().getFullYear();
+                return parseInt(`${year}${randomInt(1000, 9999)}`);
+            };
+            
+            // Form data to fill
+            const clientName = randomItem(czechNames);
+            const companyName = `Společnost ${randomItem(czechWords)} s.r.o.`;
+            const protocolName = `Protokol o provedení deratizace - ${randomItem(czechWords)}`;
+            
+            // Fill the form fields if they exist
+            setValue('protocolNumber', randomProtocolNumber());
+            setValue('protocolName', protocolName);
+            setValue('customer', companyName);
+            setValue('interventionPlace', `Provozovna ${randomItem(czechWords)}`);
+            setValue('address', generateAddress());
+            setValue('clientName', clientName);
+            setValue('clientPhone', randomPhone());
+            setValue('clientEmail', randomEmail(clientName));
+            setValue('companyName', companyName);
+            setValue('ico', randomIco());
+            setValue('dic', randomDic());
+            setValue('companyEmail', `fakturace@${companyName.toLowerCase().split(' ')[1]}.cz`);
+            setValue('companyPhone', randomPhone());
+            
+            // Handle date fields
+            const interventionDate = randomDate();
+            setValue('interventionDate', interventionDate);
+            
+            // Set next intervention date if the field exists
+            const nextDate = new Date(interventionDate);
+            nextDate.setMonth(nextDate.getMonth() + 3);
+            setValue('nextInterventionDate', nextDate.toISOString().split('T')[0]);
+            
+            // Fill other fields
+            setValue('repression', `Preventivní zásah - ${randomItem(['kontrola', 'monitoring', 'ošetření'])}`);
+            setValue('surveyName', randomItem(czechNames));
+            
+            // Randomly check some checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (Math.random() > 0.7) checkbox.checked = true;
+            });
+            
+            // Randomly select radio buttons
+            const radioGroups = {};
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                if (!radioGroups[radio.name]) {
+                    radioGroups[radio.name] = [];
+                }
+                radioGroups[radio.name].push(radio);
+            });
+            
+            Object.values(radioGroups).forEach(group => {
+                if (group.length > 0 && Math.random() > 0.3) {
+                    const randomIndex = Math.floor(Math.random() * group.length);
+                    group[randomIndex].checked = true;
+                }
+            });
+            
+            // Fill text areas
+            document.querySelectorAll('textarea').forEach(textarea => {
+                textarea.value = `Testovací text s českými znaky: ${randomItem(czechNames)} - ${randomItem(czechWords)}. Toto je náhodný text pro testování formuláře.`;
+            });
+            
+            // Trigger change events for any conditional fields
+            const event = new Event('change', { bubbles: true });
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                el.dispatchEvent(event);
+            });
+            
+            console.log('Form filled with test data!');
+            return 'Form filled with test data!';
+        }
+
+        // Make the fillTestData function available globally for console access
+        if (typeof window !== 'undefined') {
+            window.fillTestData = fillTestData;
+        }
+    </script>
+</body>
+</html>
