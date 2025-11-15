@@ -380,8 +380,8 @@ async function generatePhotoPdf() {
             
             console.log(`[PhotoPDF] PDF generated successfully, size: ${(blob.size / 1024).toFixed(2)} KB`);
             
-            // Open the PDF in a new window for printing
-            const printWindow = window.open(pdfUrl, '_blank');
+            // Open the PDF in a new window
+            const printWindow = window.open('', '_blank');
             if (!printWindow) {
                 throw new Error('Nepodařilo se otevřít nové okno. Povolte prosím vyskakovací okna pro tento web.');
             }
@@ -938,13 +938,6 @@ async function sendEmail() {
             
         // Get the PDF as a blob
         const protocolBlob = pdf.output('blob');
-        
-        // Open the PDF in a new window for printing
-        const pdfUrl = URL.createObjectURL(protocolBlob);
-        const printWindow = window.open(pdfUrl, '_blank');
-        if (!printWindow) {
-            console.warn('Pop-up was blocked. Please allow pop-ups for this site.');
-        }
         
         // Generate photo PDF if there are any photos
         let photoPdfBlob = null;
