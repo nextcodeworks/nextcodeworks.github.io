@@ -8,18 +8,13 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     min-height: 100vh;
     overflow-x: hidden;
     width: 100%;
 }
 
-.container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 10px;
-    position: relative;
-}
+
 
 header {
     text-align: center;
@@ -41,14 +36,20 @@ header p {
     word-wrap: break-word;
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
 .form-container {
     background: white;
-    border-radius: 15px;
     padding: clamp(20px, 4vw, 40px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     backdrop-filter: blur(10px);
     position: relative;
     width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -63,11 +64,11 @@ header p {
 }
 
 .form-section h2 {
-    color: #4a5568;
+    color: #001523;
     font-size: clamp(1.3rem, 4vw, 1.5rem);
     margin-bottom: clamp(15px, 3vw, 20px);
     padding-bottom: clamp(8px, 2vw, 10px);
-    border-bottom: 2px solid #667eea;
+    border-bottom: 2px solid #001523;
     word-wrap: break-word;
 }
 
@@ -75,8 +76,8 @@ header p {
     margin-bottom: clamp(15px, 3vw, 25px);
     padding: clamp(15px, 3vw, 20px);
     background: #f8fafc;
-    border-radius: 10px;
-    border-left: 4px solid #667eea;
+    border-radius: 8px;
+    border-left: 4px solid #001523;
 }
 
 .form-subsection h3 {
@@ -176,7 +177,21 @@ select:focus {
     border-radius: 8px;
     padding: clamp(10px, 2vw, 15px);
     background: white;
-    overflow: hidden;
+    width: 100%;
+}
+
+.signature-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.signature-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .signature-container canvas {
@@ -185,9 +200,17 @@ select:focus {
     background: transparent !important;
     cursor: crosshair;
     display: block;
+    width: 100%;
+    height: 150px; /* Fixed height for consistency */
+    min-height: 150px; /* Ensure minimum height */
     margin-bottom: 10px;
-    max-width: 100%;
-    height: auto;
+}
+
+/* Ensure the clear button stays at the bottom */
+#clearClientSignature,
+#clearSurveySignature {
+    align-self: flex-start; /* Align to the start of the flex container */
+    margin-top: 10px;
 }
 
 .signature-stamp-container {
@@ -238,11 +261,10 @@ select:focus {
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
-    max-width: 300px;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #001523 0%, #764ba2 100%);
     color: white;
 }
 
@@ -511,6 +533,7 @@ select:focus {
 #surveySignature {
     background: transparent !important;
     border: 1px solid #d1d5db !important;
+    width: 100%;
 }
 
 
@@ -519,6 +542,62 @@ select:focus {
     margin-bottom: 8px;
     font-weight: 500;
     word-wrap: break-word;
+}
+
+/* Photo grid and preview styles */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-preview {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #f8f9fa;
+}
+
+.photo-preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-photo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.remove-photo:hover {
+    background: #ff0000;
+}
+
+#addPhotoBtn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
 }
 
 /* Pest item styles */
@@ -592,12 +671,12 @@ select:focus {
 /* Form validation styles */
 input:invalid,
 textarea:invalid {
-    border-color: #fc8181;
+    border-color: #fdbc2c;
 }
 
 input:valid,
 textarea:valid {
-    border-color: #68d391;
+    border-color: #259139;
 }
 
 /* Loading state */
@@ -609,7 +688,7 @@ textarea:valid {
 /* Success message */
 .success-message {
     background: #c6f6d5;
-    border: 2px solid #68d391;
+    border: 2px solid #259139;
     color: #22543d;
     padding: clamp(12px, 2vw, 15px);
     border-radius: 8px;
@@ -720,6 +799,45 @@ body.modal-open {
 }
 
 /* Orientation specific fixes */
+/* Scroll Buttons */
+.scroll-btn {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #001523 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.scroll-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+.scroll-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+#scrollToTop {
+    bottom: 10px;
+    right: 10px;
+}
+
+#scrollToBottom {
+    bottom: 10px;
+    left: 10px;
+}
+
 @media (max-width: 768px) and (orientation: landscape) {
     .modal-content {
         max-height: 85vh;
