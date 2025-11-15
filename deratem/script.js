@@ -2,13 +2,36 @@
 let clientSignaturePad;
 let surveySignaturePad;
 
-// Initialize the application
+// Global variables for photo management
+let photos = [];
+const MAX_PHOTOS = 8;
+
+// Handle window resize
+function handleResize() {
+    const clientCanvas = document.getElementById('clientSignature');
+    const surveyCanvas = document.getElementById('surveySignature');
+    
+    if (clientCanvas && clientSignaturePad) {
+        const { width, height } = resizeCanvas(clientCanvas);
+        clientSignaturePad.clear(); // Clear and redraw on resize
+    }
+    
+    if (surveyCanvas && surveySignaturePad) {
+        const { width, height } = resizeCanvas(surveyCanvas);
+        surveySignaturePad.clear(); // Clear and redraw on resize
+    }
+}
+
+// Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Add resize event listener
+    window.addEventListener('resize', handleResize);
     initializeSignaturePads();
     setupEventListeners();
     loadSettings();
     setupConditionalFields();
     setupChemicalSearch();
+    setupPhotoUpload();
     
     // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
@@ -50,12 +73,36 @@ function initializeProtocolNumber() {
     protocolNumberInput.value = newProtocolNumber;
 }
 
+// Function to resize canvas to maintain crisp lines
+function resizeCanvas(canvas) {
+    // Get the container dimensions
+    const container = canvas.parentElement;
+    const containerWidth = container.clientWidth;
+    
+    // Set canvas display size (CSS pixels)
+    canvas.style.width = containerWidth + 'px';
+    canvas.style.height = (containerWidth * 0.375) + 'px'; // 400x150 aspect ratio
+    
+    // Set actual size in memory (scaled for device pixel ratio)
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = containerWidth * ratio;
+    canvas.height = (containerWidth * 0.375) * ratio;
+    
+    // Scale the context to ensure crisp drawing
+    const ctx = canvas.getContext('2d');
+    ctx.scale(ratio, ratio);
+    
+    return { width: containerWidth, height: containerWidth * 0.375 };
+}
+
 // Initialize signature pads
 function initializeSignaturePads() {
     const clientCanvas = document.getElementById('clientSignature');
     const surveyCanvas = document.getElementById('surveySignature');
     
+    // Initialize client signature pad
     if (clientCanvas) {
+        resizeCanvas(clientCanvas);
         clientSignaturePad = new SignaturePad(clientCanvas, {
             backgroundColor: 'rgba(255, 255, 255, 0)',
             penColor: 'rgb(75, 83, 161)',
@@ -64,7 +111,9 @@ function initializeSignaturePads() {
         });
     }
     
+    // Initialize survey signature pad
     if (surveyCanvas) {
+        resizeCanvas(surveyCanvas);
         surveySignaturePad = new SignaturePad(surveyCanvas, {
             backgroundColor: 'rgba(255, 255, 255, 0)',
             penColor: 'rgb(75, 83, 161)',
@@ -94,6 +143,323 @@ function initializeSignaturePads() {
     }
 }
 
+// Setup photo upload functionality
+function setupPhotoUpload() {
+    const photoUpload = document.getElementById('photoUpload');
+    const addPhotoBtn = document.getElementById('addPhotoBtn');
+    
+    console.log('[Photo] Initializing photo upload functionality...');
+    
+    if (addPhotoBtn) {
+        addPhotoBtn.addEventListener('click', () => {
+            console.log('[Photo] Add photo button clicked');
+            photoUpload.click();
+        });
+    } else {
+        console.error('[Photo] Add photo button not found!');
+    }
+    
+    if (photoUpload) {
+        photoUpload.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            console.log(`[Photo] ${files.length} files selected for upload`);
+            
+            // Clear the file input
+            photoUpload.value = '';
+            
+            // Check if adding these files would exceed the limit
+            if (photos.length + files.length > MAX_PHOTOS) {
+                const errorMsg = `[Photo] Upload failed: Maximum of ${MAX_PHOTOS} photos allowed (tried to add ${files.length} to ${photos.length} existing)`;
+                console.error(errorMsg);
+                showError(`Můžete nahrát maximálně ${MAX_PHOTOS} fotografií.`);
+                return;
+            }
+            
+            files.forEach((file, index) => {
+                console.log(`[Photo] Processing file ${index + 1}/${files.length}: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+                
+                if (!file.type.startsWith('image/')) {
+                    const errorMsg = `[Photo] Invalid file type: ${file.name} (${file.type})`;
+                    console.error(errorMsg);
+                    showError('Lze nahrávat pouze obrázkové soubory.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                const startTime = performance.now();
+                
+                reader.onloadstart = () => {
+                    console.log(`[Photo] Reading file: ${file.name}`);
+                };
+                
+                reader.onload = (e) => {
+                    const loadTime = (performance.now() - startTime).toFixed(2);
+                    console.log(`[Photo] File read complete: ${file.name} (${loadTime}ms)`);
+                    
+                    const id = 'photo-' + Math.random().toString(36).substr(2, 9);
+                    console.log(`[Photo] Generated photo ID: ${id}`);
+                    
+                    photos.push({
+                        id: id,
+                        file: file,
+                        dataUrl: e.target.result,
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    console.log(`[Photo] Added photo to collection. Total photos: ${photos.length}`);
+                    updatePhotoPreview();
+                };
+                
+                reader.onerror = (error) => {
+                    console.error(`[Photo] Error reading file ${file.name}:`, error);
+                    showError(`Chyba při čtení souboru ${file.name}`);
+                };
+                
+                reader.onabort = () => {
+                    console.warn(`[Photo] File read aborted: ${file.name}`);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        });
+    } else {
+        console.error('[Photo] File input element not found!');
+    }
+}
+
+// Update photo preview
+function updatePhotoPreview() {
+    console.log('[Photo] Updating photo preview...');
+    const startTime = performance.now();
+    
+    const photoPreview = document.getElementById('photoPreview');
+    if (!photoPreview) {
+        console.error('[Photo] Photo preview container not found!');
+        return;
+    }
+    
+    // Clear existing previews
+    console.log(`[Photo] Clearing existing previews (${photoPreview.children.length} elements)`);
+    photoPreview.innerHTML = '';
+    
+    console.log(`[Photo] Rendering ${photos.length} photos`);
+    
+    // Add photo previews
+    photos.forEach((photo, index) => {
+        console.log(`[Photo] Rendering photo ${index + 1}/${photos.length} (${photo.id})`);
+        
+        const photoElement = document.createElement('div');
+        photoElement.className = 'photo-preview';
+        photoElement.innerHTML = `
+            <img src="${photo.dataUrl}" alt="Náhled fotky" data-photo-id="${photo.id}">
+            <button type="button" class="remove-photo" data-id="${photo.id}" title="Odebrat fotku">×</button>
+            <div class="photo-info">
+                ${photo.name || 'photo'}<br>
+                ${(photo.size / 1024).toFixed(1)} KB
+            </div>
+        `;
+        photoPreview.appendChild(photoElement);
+        
+        // Add load/error handlers for the image
+        const img = photoElement.querySelector('img');
+        if (img) {
+            img.onload = () => {
+                console.log(`[Photo] Preview image loaded: ${photo.id} (${img.naturalWidth}x${img.naturalHeight}px)`);
+            };
+            img.onerror = (e) => {
+                console.error(`[Photo] Error loading preview image: ${photo.id}`, e);
+            };
+        }
+    });
+    
+    // Update remove button event listeners
+    const removeButtons = document.querySelectorAll('.remove-photo');
+    console.log(`[Photo] Setting up ${removeButtons.length} remove buttons`);
+    
+    removeButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = e.currentTarget.getAttribute('data-id');
+            console.log(`[Photo] Remove button clicked for photo ${id}`);
+            
+            const beforeCount = photos.length;
+            photos = photos.filter(photo => photo.id !== id);
+            const afterCount = photos.length;
+            
+            console.log(`[Photo] Removed photo ${id}. Count: ${beforeCount} → ${afterCount}`);
+            updatePhotoPreview();
+        });
+    });
+    
+    // Update download button state
+    const downloadBtn = document.getElementById('downloadPhotoPdf');
+    if (downloadBtn) {
+        const isDisabled = photos.length === 0;
+        downloadBtn.disabled = isDisabled;
+        console.log(`[Photo] Download button state: ${isDisabled ? 'disabled' : 'enabled'}`);
+    }
+    
+    const loadTime = (performance.now() - startTime).toFixed(2);
+    console.log(`[Photo] Preview updated in ${loadTime}ms`);
+}
+
+// Generate photo PDF - Opens in new tab with just the pictures
+async function generatePhotoPdf() {
+    if (photos.length === 0) {
+        showError('Nejsou k dispozici žádné fotky ke stažení.');
+        return;
+    }
+
+    try {
+        // Create a container for the PDF content
+        const element = document.createElement('div');
+        
+        // Simple grid of photos only - 3 per row
+        element.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 2px; width: 100%;">
+                ${photos.map(photo => `
+                    <div style="width: 100%; padding-bottom: 100%; position: relative; overflow: hidden;">
+                        <img src="${photo.dataUrl}" style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                            object-position: center;
+                        ">
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        // Use html2pdf for consistent styling with the main PDF
+        console.log('[PhotoPDF] Generating PDF using html2pdf...');
+        
+        const opt = {
+            margin: 2, // Small margin to prevent cutoff
+            filename: `fotky_${new Date().toISOString().slice(0, 10)}.pdf`,
+            image: { type: 'jpeg', quality: 0.9 },
+            html2canvas: { 
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                logging: false,
+                allowTaint: true,
+                useCORS: true
+            },
+            jsPDF: { 
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+        
+        console.log('[PhotoPDF] Starting PDF generation...');
+        
+        // Create a temporary container for the PDF content
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        document.body.appendChild(tempContainer);
+        tempContainer.appendChild(element);
+        
+        try {
+            // Generate the PDF
+            const pdf = await html2pdf()
+                .set(opt)
+                .from(element)
+                .toPdf()
+                .get('pdf');
+                
+            // Get the PDF as a blob
+            const blob = pdf.output('blob');
+            const pdfUrl = URL.createObjectURL(blob);
+            
+            console.log(`[PhotoPDF] PDF generated successfully, size: ${(blob.size / 1024).toFixed(2)} KB`);
+            
+            // Open the PDF in a new window for printing
+            const printWindow = window.open(pdfUrl, '_blank');
+            if (!printWindow) {
+                throw new Error('Nepodařilo se otevřít nové okno. Povolte prosím vyskakovací okna pro tento web.');
+            }
+            
+            // Create a minimal viewer that auto-prints
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Fotografie</title>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { margin: 0; padding: 0; }
+                        img { max-width: 100%; height: auto; display: block; }
+                        @media print {
+                            body { padding: 0; margin: 0; }
+                        }
+                    </style>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                                setTimeout(window.close, 1000);
+                            }, 500);
+                        };
+                    <\/script>
+                </head>
+                <body>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; width: 100%;">
+                        ${photos.map(photo => `
+                            <div style="width: 100%; padding-bottom: 100%; position: relative; overflow: hidden;">
+                                <img src="${photo.dataUrl}" style="
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: contain;
+                                    object-position: center;
+                                ">
+                            </div>
+                        `).join('')}
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            console.log('[PhotoPDF] PDF viewer window ready');
+            
+        } catch (error) {
+            console.error('[PhotoPDF] Error generating PDF:', error);
+            throw error;
+        } finally {
+            // Clean up the temporary container
+            document.body.removeChild(tempContainer);
+        }
+        
+        const totalTime = (performance.now() - startTime).toFixed(2);
+        console.log(`[PhotoPDF] PDF generation completed in ${totalTime}ms`);
+        
+    } catch (error) {
+        console.error('[PhotoPDF] Critical error during PDF generation:', error);
+        if (error instanceof Error) {
+            console.error('[PhotoPDF] Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+        } else {
+            console.error('[PhotoPDF] Non-Error object thrown:', error);
+        }
+        showError('Nepodařilo se vygenerovat PDF s fotografiemi: ' + (error.message || 'Neznámá chyba'));
+    } finally {
+        console.groupEnd();
+    }
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // PDF Generation
@@ -102,6 +468,7 @@ function setupEventListeners() {
     const sendEmailBtn = document.getElementById('sendEmail');
     const clearFormBtn = document.getElementById('clearForm');
     const settingsBtn = document.getElementById('settings');
+    const downloadPhotoPdfBtn = document.getElementById('downloadPhotoPdf');
     
     if (generatePdfBtn) {
         generatePdfBtn.addEventListener('click', generatePdf);
@@ -121,6 +488,11 @@ function setupEventListeners() {
     
     if (settingsBtn) {
         settingsBtn.addEventListener('click', openSettings);
+    }
+    
+    // Download photo PDF - opens in new tab with print dialog
+    if (downloadPhotoPdfBtn) {
+        downloadPhotoPdfBtn.addEventListener('click', generatePhotoPdf);
     }
     
     // Modal controls
@@ -535,8 +907,8 @@ function downloadPdf() {
     generatePdf();
 }
 
-// Send Email
-function sendEmail() {
+// Send Email with PDF attachments using Cordova Email Composer
+async function sendEmail() {
     if (!validateForm()) {
         alert('Vyplňte prosím všechna povinná pole.');
         return;
@@ -545,45 +917,151 @@ function sendEmail() {
     try {
         const formData = collectFormData();
         
-        // Create HTML email content
-        const subject = `Protokol č. ${formData.protocolNumber} - ${formData.companyName}`;
-        const htmlContent = `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
-                <div style="background-color: #4b53a1; padding: 20px; color: white; text-align: center;">
-                    <h1 style="margin: 0; font-size: 24px;">Dobrý den,</h1>
-                </div>
-                
-                <div style="padding: 20px; background-color: #f9f9f9;">
-                    <p>v příloze naleznete protokol o provedeném ošetření.</p>
-                    
-                    <div style="margin: 20px 0; padding: 15px; background-color: #eef2ff; border-left: 4px solid #4b53a1;">
-                        <p style="margin: 5px 0;"><strong>Číslo protokolu:</strong> ${formData.protocolNumber}</p>
-                        <p style="margin: 5px 0;"><strong>Společnost:</strong> ${formData.companyName}</p>
-                        <p style="margin: 5px 0;"><strong>Datum zásahu:</strong> ${formData.interventionDate}</p>
+        // First generate the protocol PDF
+        const element = document.createElement('div');
+        element.innerHTML = generatePdfContent(formData);
+        
+        const opt = {
+            margin: 10,
+            filename: `protokol_${formData.protocolNumber}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Generate PDF and get as blob
+        const pdf = await html2pdf()
+            .set(opt)
+            .from(element)
+            .toPdf()
+            .get('pdf');
+            
+        // Get the PDF as a blob
+        const protocolBlob = pdf.output('blob');
+        
+        // Open the PDF in a new window for printing
+        const pdfUrl = URL.createObjectURL(protocolBlob);
+        const printWindow = window.open(pdfUrl, '_blank');
+        if (!printWindow) {
+            console.warn('Pop-up was blocked. Please allow pop-ups for this site.');
+        }
+        
+        // Generate photo PDF if there are any photos
+        let photoPdfBlob = null;
+        if (photos.length > 0) {
+            const photoPdf = await generatePhotoPdf();
+            if (photoPdf) {
+                photoPdfBlob = photoPdf;
+            }
+        }
+        
+        // Check if Cordova is available
+        if (window.cordova && window.cordova.plugins && window.cordova.plugins.email) {
+            // Convert blobs to base64 (remove data URI prefix if present)
+            let protocolBase64 = await blobToBase64(protocolBlob);
+            if (protocolBase64.includes(',')) {
+                protocolBase64 = protocolBase64.split(',')[1]; // Remove data:application/pdf;base64, prefix
+            }
+            
+            const attachments = [
+                'base64:protokol_' + formData.protocolNumber + '.pdf//' + protocolBase64
+            ];
+            
+            // Add photo PDF if available
+            if (photoPdfBlob) {
+                let photoBase64 = await blobToBase64(photoPdfBlob);
+                if (photoBase64.includes(',')) {
+                    photoBase64 = photoBase64.split(',')[1];
+                }
+                attachments.push('base64:fotodokumentace_' + formData.protocolNumber + '.pdf//' + photoBase64);
+            }
+            
+            // Create email with attachments
+            const email = {
+                to: formData.clientEmail,
+                cc: 'info@deratem.cz',
+                subject: `Protokol č. ${formData.protocolNumber} - Deratem.cz`,
+                body: `<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    <p>Dobrý den,</p>
+    
+    <p>v příloze naleznete protokol o provedeném ošetření${photoPdfBlob ? ' a fotodokumentaci' : ''}.</p>
+    
+    <p>
+        <strong>Číslo protokolu:</strong> ${formData.protocolNumber || 'Neznámé číslo'}<br>
+        <strong>Jméno/Společnost:</strong> ${formData.customer || 'Neznámý zákazník'}<br>
+        <strong>Datum zásahu:</strong> ${formData.interventionDate || 'Neznámé datum'}
+    </p>
+    
+    <p>V případě jakýchkoli dotazů nás neváhejte kontaktovat.</p>
+    
+    <p>S přáním hezkého dne,</p>
+    
+    <div style="font-family: Arial, sans-serif; max-width: 600px; border-top: 2px solid #e0e0e0; padding-top: 20px; margin-top: 20px;">
+        <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+            <tr>
+                <td style="width: 80px; vertical-align: top; padding-right: 20px;">
+                    <img src="https://www.deratem.cz/wp-content/uploads/2025/03/deratem_logo_nobg.png" alt="Deratem.cz" style="width: 80px; height: auto; display: block;" />
+                </td>
+                <td style="vertical-align: top;">
+                    <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333;">Tomáš Šmídek</div>
+                    <div style="color: #666; font-size: 14px; margin-bottom: 5px;">
+                        <span>Technik</span>
+                        <span style="color: #e74c3c;"> | </span>
+                        <span>Deratem</span>
+                        <span style="color: #e74c3c;"> | </span>
+                        <span>Štětínská 375/14, Praha 8</span>
                     </div>
-                    
-                    <p>V případě jakýchkoli dotazů nás neváhejte kontaktovat.</p>
-                    
-                    <p>S pozdravem,<br>${formData.companyName}</p>
-                </div>
-                
-                <div style="text-align: center; padding: 15px; background-color: #f0f0f0; font-size: 12px; color: #666;">
-                    <p>Tento email byl vygenerován automaticky, prosím neodpovídejte na něj.</p>
-                </div>
-            </div>
-        `;
-        
-        // Create mailto link with HTML content
-        const emailBody = encodeURIComponent(htmlContent);
-        const mailtoLink = `mailto:${formData.clientEmail}?subject=${encodeURIComponent(subject)}&body=${emailBody}`;
-        
-        // Open default email client
-        window.location.href = mailtoLink;
-        
+                    <div style="color: #666; font-size: 14px;">
+                        <a href="mailto:info@deratem.cz" style="color: #3498db; text-decoration: none;">info@deratem.cz</a>
+                        <span style="color: #e74c3c;"> | </span>
+                        <a href="tel:+420777333164" style="color: #3498db; text-decoration: none;">+420 777 333 164</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>`,
+                isHtml: true,
+                attachments: attachments
+            };
+            
+            // Open email client
+            cordova.plugins.email.open(email, function() {
+                console.log('Email composer closed');
+            }, function(error) {
+                console.error('Error opening email composer:', error);
+                showError('Nepodařilo se otevřít emailového klienta: ' + error);
+            });
+        } else {
+            // Fallback to mailto link if Cordova is not available
+            const subject = `Protokol č. ${formData.protocolNumber} - Deratem.cz`;
+            const body = `Dobrý den,\n\nv příloze naleznete protokol o provedeném ošetření${photoPdfBlob ? ' a fotodokumentaci' : ''}.\n\nČíslo protokolu: ${formData.protocolNumber || 'Neznámé číslo'}\nJméno/Společnost: ${formData.customer || 'Neznámý zákazník'}\nDatum zásahu: ${formData.interventionDate || 'Neznámé datum'}\n\nV případě jakýchkoli dotazů nás neváhejte kontaktovat.\n\nS přáním hezkého dne,\n\nTomáš Šmídek - Technik, Deratem\nŠtětínská 375/14, Praha 8\ninfo@deratem.cz | +420 777 333 164`;
+            
+            const mailtoLink = `mailto:${formData.clientEmail}?cc=info@deratem.cz&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
     } catch (error) {
         console.error('Chyba při přípravě e-mailu:', error);
         showError('Chyba při přípravě e-mailu: ' + error.message);
     }
+}
+
+// Helper function to convert blob to base64
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64data = reader.result.split(',')[1];
+            resolve(base64data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
 }
 
 // Clear form
@@ -800,8 +1278,8 @@ function generatePdfContent(data) {
             <style>
                 body { 
                     font-family: Arial, sans-serif; 
-                    font-size: 10px;
-                    line-height: 1.2;
+                    font-size: 11px;
+                    line-height: 1.3;
                     color: #000;
                     margin: 0 auto;
                     width: 100%;
@@ -815,14 +1293,14 @@ function generatePdfContent(data) {
                     border-bottom: 2px solid #333;
                 }
                 .header h1 { 
-                    font-size: 16px; 
-                    margin: 0 0 4px 0;
+                    font-size: 18px; 
+                    margin: 0 0 5px 0;
                     color: #2c5282;
                     font-weight: bold;
                 }
                 .header h2 { 
-                    font-size: 12px; 
-                    margin: 0 0 6px 0;
+                    font-size: 14px; 
+                    margin: 0 0 7px 0;
                     color: #4a5568;
                     font-weight: normal;
                 }
@@ -851,7 +1329,7 @@ function generatePdfContent(data) {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     gap: 6px;
-                    font-size: 9px;
+                    font-size: 10px;
                 }
                 .info-item {
                     margin-bottom: 4px;
@@ -859,7 +1337,7 @@ function generatePdfContent(data) {
                 .info-label {
                     font-weight: bold;
                     color: #4a5568;
-                    font-size: 9px;
+                    font-size: 10px;
                 }
                 .signature-section {
                     margin-top: 12px;
@@ -904,7 +1382,7 @@ function generatePdfContent(data) {
                 .compact-table {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 9px;
+                    font-size: 10px;
                 }
                 .compact-table tr {
                     border-bottom: 1px solid #eee;
@@ -919,14 +1397,14 @@ function generatePdfContent(data) {
                 }
                 .checkbox-list {
                     margin: 4px 0;
-                    font-size: 9px;
+                    font-size: 10px;
                 }
                 .recommendations {
                     background: #f0f9ff;
                     padding: 6px;
                     border-radius: 3px;
                     border-left: 3px solid #3182ce;
-                    font-size: 9px;
+                    font-size: 10px;
                     margin-top: 4px;
                 }
                 @media print {
@@ -1110,7 +1588,7 @@ function generatePdfContent(data) {
                 <div style="text-align: center; font-weight: bold; margin-bottom: 6px; font-size: 10px;">DODAVATEL</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 8px; text-align: center;">
                     <div style="border-right: 1px solid #2c5282; padding-right: 8px;">
-                        <strong>Tomáš Šmídek – Deratem</strong><br>
+                        <strong>Tomáš Šmídek – Deratem.cz</strong><br>
                         Štětínská 375/14, Praha 8<br>
                         IČO: 18633617
                     </div>
@@ -1228,6 +1706,66 @@ function setupChemicalSearch() {
         });
         return chemicals;
     }
+
+// Scroll to top button functionality
+document.getElementById('scrollToTop')?.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// Scroll to bottom button functionality
+document.getElementById('scrollToBottom')?.addEventListener('click', () => {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
+});
+
+// Show/hide scroll buttons based on scroll position
+window.addEventListener('scroll', () => {
+    const scrollToTop = document.getElementById('scrollToTop');
+    const scrollToBottom = document.getElementById('scrollToBottom');
+    
+    if (scrollToTop && scrollToBottom) {
+        // Show/hide scroll to top button
+        if (window.scrollY > 300) {
+            scrollToTop.style.opacity = '0.9';
+            scrollToTop.style.visibility = 'visible';
+        } else {
+            scrollToTop.style.opacity = '0';
+            scrollToTop.style.visibility = 'hidden';
+        }
+        
+        // Show/hide scroll to bottom button
+        if ((window.innerHeight + window.scrollY) < (document.body.offsetHeight - 100)) {
+            scrollToBottom.style.opacity = '0.9';
+            scrollToBottom.style.visibility = 'visible';
+        } else {
+            scrollToBottom.style.opacity = '0';
+            scrollToBottom.style.visibility = 'hidden';
+        }
+    }
+});
+
+// Initialize scroll buttons visibility
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollToTop = document.getElementById('scrollToTop');
+    const scrollToBottom = document.getElementById('scrollToBottom');
+    
+    if (scrollToTop) {
+        scrollToTop.style.opacity = '0';
+        scrollToTop.style.visibility = 'hidden';
+        scrollToTop.style.transition = 'opacity 0.3s, visibility 0.3s';
+    }
+    
+    if (scrollToBottom) {
+        scrollToBottom.style.opacity = '0';
+        scrollToBottom.style.visibility = 'hidden';
+        scrollToBottom.style.transition = 'opacity 0.3s, visibility 0.3s';
+    }
+});
 
 // Make functions available globally
 window.generatePdf = generatePdf;
