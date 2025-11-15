@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <div class="container">
 
         <main>
+
             <div class="form-container">
                 <form id="protocolForm">
                     <!-- Základní informace o protokolu -->
@@ -238,8 +238,24 @@
                             
                             <div class="chemical-item">
                                 <label class="chemical-checkbox">
-                                    <input type="checkbox" name="chemicals[]" value="Hubex" data-has-quantity="true">
-                                    <span>Hubex</span>
+                                    <input type="checkbox" name="chemicals[]" value="Hubex L" data-has-quantity="true">
+                                    <span>Hubex L</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství (ks/g/ml/atd.)" style="display: none;">
+                                </label>
+                            </div>
+
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Hubex Monitor" data-has-quantity="true">
+                                    <span>Hubex Monitor</span>
+                                    <input type="text" class="quantity-input" placeholder="Množství (ks/g/ml/atd.)" style="display: none;">
+                                </label>
+                            </div>
+
+                            <div class="chemical-item">
+                                <label class="chemical-checkbox">
+                                    <input type="checkbox" name="chemicals[]" value="Cytrol Dust" data-has-quantity="true">
+                                    <span>Cytrol Dust</span>
                                     <input type="text" class="quantity-input" placeholder="Množství (ks/g/ml/atd.)" style="display: none;">
                                 </label>
                             </div>
@@ -344,8 +360,8 @@
                             
                             <div class="chemical-item">
                                 <label class="chemical-checkbox">
-                                    <input type="checkbox" name="chemicals[]" value="Cytrol forte" data-has-quantity="true">
-                                    <span>Cytrol forte</span>
+                                    <input type="checkbox" name="chemicals[]" value="Cytrol Forte" data-has-quantity="true">
+                                    <span>Cytrol Forte</span>
                                     <input type="text" class="quantity-input" placeholder="Množství (ks/g/ml/atd.)" style="display: none;">
                                 </label>
                             </div>
@@ -464,6 +480,20 @@
                         </div>
                     </section>
 
+                    <!-- Fotky -->
+                    <section class="form-section">
+                        <h2>Fotky</h2>
+                        <div id="photoUploadContainer">
+                            <input type="file" id="photoUpload" accept="image/*" capture="camera" multiple style="display: none;">
+                            <button type="button" id="addPhotoBtn" class="btn btn-secondary" style="margin-bottom: 15px;">
+                                <i class="icon-camera"></i> + Přidat foto
+                            </button>
+                            <div id="photoPreview" class="photo-grid">
+                                <!-- Photo previews will be added here -->
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Doporučené akce -->
                     <section class="form-section">
                         <h2>Doporučené akce</h2>
@@ -527,8 +557,14 @@
                         <div class="form-group">
                             <label>Podpis klienta</label>
                             <div class="signature-container">
-                                <canvas id="clientSignature" width="400" height="150"></canvas>
-                                <button type="button" id="clearClientSignature" class="btn-secondary full-width">Vymazat podpis</button>
+                                <div class="signature-wrapper">
+                                    <div class="signature-row">
+                                        <canvas id="clientSignature" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="signature-row">
+                                        <button type="button" id="clearClientSignature" class="btn-secondary">Vymazat podpis</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -543,28 +579,41 @@
                         <div class="form-group">
                             <label>Podpis účasti</label>
                             <div class="signature-container">
-                                <canvas id="surveySignature" width="400" height="150"></canvas>
-                                <button type="button" id="clearSurveySignature" class="btn-secondary full-width">Vymazat podpis</button>
+                                <div class="signature-wrapper">
+                                    <div class="signature-row">
+                                        <canvas id="surveySignature" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="signature-row">
+                                        <button type="button" id="clearSurveySignature" class="btn-secondary">Vymazat podpis</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
 
-                    <!-- Action Buttons -->
-                    <section class="form-section actions">
-                        <button type="button" id="generatePdf" class="btn-primary">Stáhnout PDF</button>
-                        <button type="button" id="viewPdf" class="btn-secondary">Zobrazit PDF</button>
-                        <button type="button" id="sendEmail" class="btn-primary" disabled>Odeslat e-mailem</button>
-                        <button type="button" id="clearForm" class="btn-secondary">Vyčistit formulář</button>
-                        <button type="button" id="settings" class="btn-secondary" disabled>Nastavení</button>
+                    <section class="form-section" style="width: 100%;">
+                        <div class="form-actions" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; width: 100%;">
+                            <button type="button" id="generatePdf" class="btn btn-primary" style="width: 100%;">Stáhnout PDF</button>
+                            <!-- <button type="button" id="viewPdf" class="btn btn-primary" style="width: 100%;">Zobrazit PDF</button> -->
+                            <button type="button" id="downloadPhotoPdf" class="btn btn-primary" style="width: 100%;">Stáhnout foto PDF</button>
+                            <button type="button" id="sendEmail" class="btn btn-primary" style="width: 100%;">Odeslat e-mailem</button>
+                            <button type="button" id="clearForm" class="btn btn-secondary" style="width: 100%;">Vyčistit formulář</button>
+                            <button type="button" id="settings" class="btn btn-secondary" disabled style="width: 100%;">Nastavení</button>
+                        </div>
                     </section>
+
                 </form>
+            </div>
+            <div style="text-align: center; margin: 10px 0;">
+                <button type="button" onclick="fillTestData()" class="btn" style="padding: 10px 20px; background: linear-gradient(135deg, #001523 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">
+                    Vyplnit formulář testovacími daty
+                </button>
             </div>
         </main>
 
         <!-- PDF Preview Modal -->
         <div id="pdfPreviewModal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
                 <h2>Náhled PDF</h2>
                 <div id="pdfPreview"></div>
                 <div class="modal-actions">
@@ -612,6 +661,19 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Scroll Buttons -->
+    <button id="scrollToTop" class="scroll-btn" title="Nahoru">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+    <button id="scrollToBottom" class="scroll-btn" title="Dolů">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+        </svg>
+    </button>
 
     <script src="script.js"></script>
     <script>
@@ -669,8 +731,15 @@
         
         // Function to fill the form with test data
         function fillTestData() {
+            // Ask for confirmation before proceeding
+            const confirmed = confirm('Opravdu chcete vyplnit formulář testovacími daty? Tato akce přepíše veškerá aktuálně zadaná data.');
+            if (!confirmed) {
+                console.log('Vyplňování testovacími daty zrušeno.');
+                return;
+            }
+            
             // Czech names and words with diacritics
-            const czechNames = ['Jan Novák', 'Petr Svoboda', 'Jana Černá', 'Marie Dvořáková', 'Tomáš Šmídek'];
+            const czechNames = ['Jan Novak', 'Petr Svoboda', 'Jana Cerna', 'Marie Dvorakova'];
             const czechWords = ['Praha', 'Brno', 'Ostrava', 'Plzeň', 'Olomouc', 'Liberec', 'České Budějovice', 'Hradec Králové', 'Ústí nad Labem', 'Pardubice'];
             const czechStreets = ['Václavské', 'Národní', '28. října', 'Revoluční', 'Karlovo', 'Jungmannovo'];
             
@@ -718,10 +787,10 @@
             // Generate random DIČ
             const randomDic = () => `CZ${randomIco()}`;
             
-            // Generate random protocol number
+            // Generate random protocol number in format YYYY_XXXX
             const randomProtocolNumber = () => {
                 const year = new Date().getFullYear();
-                return parseInt(`${year}${randomInt(1000, 9999)}`);
+                return `${year}_${randomInt(1000, 9999)}`;
             };
             
             // Form data to fill
